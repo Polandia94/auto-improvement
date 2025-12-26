@@ -178,7 +178,9 @@ class TestClaudeClientMocked:
             assert mock_run.call_count >= 2
             # Verify claude --version was called
             version_calls = [
-                call for call in mock_run.call_args_list if "claude" in str(call) and "--version" in str(call)
+                call
+                for call in mock_run.call_args_list
+                if "claude" in str(call) and "--version" in str(call)
             ]
             assert len(version_calls) == 1
 

@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import os
-import subprocess
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -106,8 +104,8 @@ class UnifiedAnalyzer:
             agent_file=self.agent_client.agent_file,
         )
 
-        # Run Claude interactively - it will edit files directly
-        self._run_analysis(prompt)
+        # Run the agent interactively - it will edit files directly
+        self.agent_client.run_analysis(prompt, self.learning_dir)
 
     def _format_solution(self, solution: Solution, label: str) -> str:
         """Format a solution for display in prompt."""
@@ -122,71 +120,6 @@ class UnifiedAnalyzer:
             lines.append(f"\n### {filename}\n```\n{content}\n```\n")
 
         return "\n".join(lines)
-
-    def _get_claude_config_dir(self) -> Path:
-        """Get the persistent Claude config directory for Docker."""
-        config_dir = Path.home() / ".auto-improve" / "claude-config"
-        config_dir.mkdir(parents=True, exist_ok=True)
-        return config_dir
-
-    def _build_docker_cmd(self, claude_args: list[str], workspace_dir: Path) -> list[str]:
-        """Build Docker command to run Claude in isolation."""
-        claude_config = self._get_claude_config_dir()
-        return [
-            "docker",
-            "run",
-            "--rm",
-            "-v",
-            f"{workspace_dir}:/workspace",
-            "-v",
-            f"{claude_config}:/home/claude/.claude",  # Persistent auth
-            "-w",
-            "/workspace",
-            "-e",
-            f"ANTHROPIC_API_KEY={os.environ.get('ANTHROPIC_API_KEY', '')}",
-            self.agent_client.config.docker_image,
-            *claude_args,
-        ]
-
-    def _run_analysis(self, prompt: str) -> None:
-        """Run Claude in Docker for isolation."""
-        # Write prompt to temp file in learning directory (accessible in Docker)
-        prompt_file = self.learning_dir / ".claude-prompt.txt"
-        prompt_file.write_text(prompt)
-
-        try:
-            # Build Claude command
-            claude_args = [
-                self.agent_client.code_path,
-                "--print",  # Print response and exit automatically
-                "--dangerously-skip-permissions",  # Safe because running in Docker
-                "--system-prompt-file",
-                "/workspace/.claude-prompt.txt",
-                "Execute the analysis described in the system prompt.",
-            ]
-
-            # Wrap in Docker for isolation
-            cmd = self._build_docker_cmd(claude_args, self.learning_dir)
-
-            result = subprocess.run(
-                cmd,
-                text=True,
-                timeout=3000,  # 50 minute timeout
-                check=False,
-            )
-
-            if result.returncode != 0:
-                raise RuntimeError(
-                    f"{self.agent_client.agent_name} analysis failed with return code {result.returncode}"
-                )
-
-        except subprocess.TimeoutExpired as err:
-            raise RuntimeError(f"{self.agent_client.agent_name} analysis timed out") from err
-        except Exception as err:
-            raise RuntimeError(f"Failed to run {self.agent_client.agent_name}: {err}") from err
-        finally:
-            # Clean up prompt file
-            prompt_file.unlink(missing_ok=True)
 
     def _default_analysis_prompt(self) -> str:
         """Default prompt for analysis."""

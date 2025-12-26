@@ -58,7 +58,6 @@ my_vcr = vcr.VCR(
 )
 
 
-
 class TestGitHubIssuesClientIntegration:
     """Integration tests for GitHub Issues client with various projects."""
 
@@ -721,7 +720,6 @@ Django follows MTV (Model-Template-View) pattern.
         with patch("subprocess.run", side_effect=subprocess_side_effect) as mock_run:
             yield mock_run
 
-
     @my_vcr.use_cassette("full_cycle_django_prs_auto.yaml")  # type: ignore[untyped-decorator]
     def test_run_improvement_cycle_django_with_trac(
         self,
@@ -792,7 +790,6 @@ Django follows MTV (Model-Template-View) pattern.
             session = result.sessions[0]
             assert session.pr_info is not None
             assert session.attempts >= 1
-
 
     @my_vcr.use_cassette("full_cycle_django_trac_issue.yaml")  # type: ignore[untyped-decorator]
     def test_run_improvement_cycle_with_specific_pr(

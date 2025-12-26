@@ -146,6 +146,24 @@ class AbstractAgentClient(ABC):
         agent_md_content: str | None = None,
     ) -> None: ...
 
+    @abstractmethod
+    def run_analysis(self, prompt: str, workspace_dir: Path) -> None:
+        """
+        Run an analysis task with the given prompt in the specified workspace.
+
+        The agent should execute the prompt and make any necessary file changes
+        in the workspace directory. This runs in Docker for isolation.
+
+        Args:
+            prompt: The analysis prompt to execute
+            workspace_dir: Directory to use as workspace (mounted in Docker)
+
+        Raises:
+            RuntimeError: If the analysis fails or times out
+
+        """
+        ...
+
     def _create_comparation_prompt(
         self, developer_solution: Solution, agent_solution: Solution
     ) -> str:

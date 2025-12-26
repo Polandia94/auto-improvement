@@ -303,3 +303,49 @@ Implement the solution by editing the necessary files directly."""
 
         if result.returncode != 0:
             raise RuntimeError(f"Code analysis failed with return code {result.returncode}")
+
+    @typing.override
+    def run_analysis(self, prompt: str, workspace_dir: Path) -> None:
+        """Run analysis with a prompt in Docker for isolation."""
+        # Write prompt to temp file in workspace directory (accessible in Docker)
+        prompt_file = workspace_dir / ".claude-prompt.txt"
+        prompt_file.write_text(prompt)
+
+        try:
+            # Build Claude command - runs in Docker for isolation
+            claude_args = [
+                self.config.code_path,
+                "--print",  # Print response and exit automatically
+                "--dangerously-skip-permissions",  # Safe because running in Docker
+                "--system-prompt-file",
+                "/workspace/.claude-prompt.txt",
+                "Execute the analysis described in the system prompt.",
+            ]
+
+            if self.config.model:
+                claude_args.extend(["--model", self.config.model])
+
+            # Wrap in Docker for isolation
+            cmd = self._build_docker_cmd(claude_args, workspace_dir)
+
+            result = subprocess.run(
+                cmd,
+                text=True,
+                timeout=3000,  # 50 minute timeout
+                check=False,
+            )
+
+            if result.returncode != 0:
+                raise RuntimeError(
+                    f"{self.agent_name} analysis failed with return code {result.returncode}"
+                )
+
+        except subprocess.TimeoutExpired as err:
+            raise RuntimeError(f"{self.agent_name} analysis timed out") from err
+        except RuntimeError:
+            raise
+        except Exception as err:
+            raise RuntimeError(f"Failed to run {self.agent_name}: {err}") from err
+        finally:
+            # Clean up prompt file
+            prompt_file.unlink(missing_ok=True)
