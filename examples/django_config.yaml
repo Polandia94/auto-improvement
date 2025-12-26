@@ -1,0 +1,116 @@
+# Django Auto-Improvement Configuration
+# This configuration is specifically for learning from Django project PRs
+
+project:
+  name: "Django"
+  repo: "django/django"
+
+# Django uses Trac for issue tracking (top-level, not nested)
+issue_tracker:
+  url: "https://code.djangoproject.com"
+  ticket_pattern: "https://code.djangoproject.com/ticket/{ticket_id}"
+
+# PR Selection Criteria
+pr_selection:
+  criteria:
+    # Only merged PRs
+    merged: true
+
+    # Must have linked issue
+    has_linked_issue: true
+
+    # File change limits (avoid very large refactors)
+    min_files_changed: 1
+    max_files_changed: 15
+
+    # Look back 90 days
+    days_back: 90
+
+  # Exclude certain types of PRs
+  exclude_labels:
+    - "dependencies"
+    - "automated"
+    - "translation"
+    - "documentation"
+
+  # Optionally include only specific labels
+  include_labels: []
+
+# Learning Configuration
+learning:
+  # Try up to 3 times per PR before giving up
+  max_attempts_per_pr: 3
+
+  # Need 80% similarity to consider success
+  success_threshold: 0.80
+
+  # Process at least 1 PR before moving to next
+  min_prs_before_next: 1
+
+  # Process maximum 5 PRs per session
+  max_prs_per_session: 5
+
+# AI Agent Configuration
+agent_config:
+  # For Code mode (default - uses Claude Code CLI)
+  code_path: "claude"  # Path to claude CLI
+
+  # For API mode, uncomment these:
+  # model: "claude-sonnet-4-5-20250929"
+  # max_tokens: 8000
+  # temperature: 0.7
+  # api_key: "sk-ant-..."  # Or set ANTHROPIC_API_KEY env var
+
+# Custom Prompts (Django-specific)
+# Claude uses these prompts to compare solutions and extract learnings
+# You can customize or omit them to use built-in intelligent defaults
+prompts:
+  research: |
+    Research the Django web framework project. Focus on:
+    - Django's architecture (MVT pattern, ORM, middleware, etc.)
+    - Coding conventions (PEP 8, Django-specific patterns)
+    - Common patterns in recent PRs (deprecations, backwards compatibility)
+    - Testing practices (Django's test framework, test organization)
+    - Database handling and migrations
+    - Security considerations
+
+  implementation: |
+    You are implementing a fix for Django, a popular Python web framework.
+
+    Issue: {issue_description}
+
+    Context files from the repository:
+    {context}
+
+    Django conventions to follow:
+    - Follow PEP 8 and Django's coding style
+    - Maintain backwards compatibility when possible
+    - Add tests for any new functionality or bug fixes
+    - Consider database migration implications
+    - Think about security implications
+    - Use Django's existing patterns and utilities
+    - Keep performance in mind (avoid N+1 queries, etc.)
+
+    Implement a minimal, focused solution that addresses the issue.
+
+  # Optional: Override default unified analysis prompt
+  # The analysis prompt handles comparison, learning, and updates to all learning files
+  # Leave as null to use the intelligent default
+  analysis: null
+
+  # Or customize with Django-specific analysis:
+  # analysis: |
+  #   Compare these two solutions for a Django issue and update all learning files:
+  #
+  #   Developer Solution: {developer_solution}
+  #   Claude's Solution: {claude_solution}
+  #
+  #   Django-specific analysis:
+  #   1. **Django Patterns**: Which Django patterns did the developer use?
+  #   2. **Backwards Compatibility**: How was compatibility handled?
+  #   3. **Testing**: Compare test approaches
+  #   4. **ORM Usage**: How was the Django ORM used effectively?
+  #   5. **Migrations**: Were database migrations handled correctly?
+  #
+  #   Update CLAUDE.md, create skills in Anthropic Skills format, suggest MCP servers,
+  #   and add insights for the developer to review.

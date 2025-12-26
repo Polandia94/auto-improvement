@@ -1,0 +1,67 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/vnd.github.v3+json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.32.5
+    method: GET
+    uri: https://api.github.com/repos/django/django/pulls?state=closed&sort=updated&direction=desc&per_page=100&page=1
+  response:
+    body:
+      string: '{"message":"API rate limit exceeded for 37.228.242.36. (But here''s
+        the good news: Authenticated requests get a higher rate limit. Check out the
+        documentation for more details.)","documentation_url":"https://docs.github.com/rest/overview/resources-in-the-rest-api#rate-limiting"}
+
+        '
+    headers:
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining,
+        X-RateLimit-Reset, X-RateLimit-Used, X-RateLimit-Resource, X-OAuth-Scopes,
+        X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, Deprecation,
+        Sunset
+      Content-Length:
+      - '279'
+      Content-Security-Policy:
+      - default-src 'none'; style-src 'unsafe-inline'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Thu, 25 Dec 2025 14:05:46 GMT
+      Referrer-Policy:
+      - origin-when-cross-origin, strict-origin-when-cross-origin
+      Server:
+      - Varnish
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - deny
+      X-GitHub-Media-Type:
+      - github.v3; format=json
+      X-GitHub-Request-Id:
+      - 9F82:1A2CAB:17BE66C:1E61DF3:694D44BA
+      X-RateLimit-Limit:
+      - '60'
+      X-RateLimit-Remaining:
+      - '0'
+      X-RateLimit-Reset:
+      - '1766672290'
+      X-RateLimit-Resource:
+      - core
+      X-RateLimit-Used:
+      - '60'
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 403
+      message: rate limit exceeded
+version: 1

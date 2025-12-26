@@ -1,0 +1,453 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.32.5
+    method: GET
+    uri: https://code.djangoproject.com/ticket/34678
+  response:
+    body:
+      string: "\n<!DOCTYPE html>\n<html lang=\"en-US\"> \n<head>\n        <!-- # block
+        head (content inherited from layout.html) -->\n    <title>\n      #34678 (README.rst
+        does not mention the Django Discord or Django forum)\n          \u2013 Django\n\n
+        \   </title>\n\n    <meta http-equiv=\"Content-Type\" content=\"text/html;
+        charset=UTF-8\" />\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"
+        />\n    <!--[if IE]><script>\n        if (/^#__msie303:/.test(window.location.hash))\n
+        \       window.location.replace(window.location.hash.replace(/^#__msie303:/,
+        '#'));\n        </script><![endif]-->\n\n    <link rel=\"start\"  href=\"/wiki\"
+        />\n    <link rel=\"search\"  href=\"/search\" />\n    <link rel=\"help\"
+        \ href=\"/wiki/TracGuide\" />\n    <link rel=\"stylesheet\"  href=\"/chrome/common/css/trac.css\"
+        type=\"text/css\" />\n    <link rel=\"stylesheet\"  href=\"/chrome/common/css/ticket.css\"
+        type=\"text/css\" />\n    <link rel=\"stylesheet\"  href=\"/chrome/common/css/jquery-ui/jquery-ui.css\"
+        type=\"text/css\" />\n    <link rel=\"stylesheet\"  href=\"/chrome/common/css/jquery-ui-addons.css\"
+        type=\"text/css\" />\n    <link rel=\"stylesheet\"  href=\"/chrome/tracdragdrop/tracdragdrop.css\"
+        type=\"text/css\" />\n    <link rel=\"icon\"  href=\"/chrome/site/img/favicon.ico\"
+        type=\"image/x-icon\" />\n    <link rel=\"first\"  href=\"/ticket/1\" title=\"Ticket
+        #1\" />\n    <link rel=\"prev\"  href=\"/ticket/34677\" title=\"Ticket #34677\"
+        />\n    <link rel=\"last\"  href=\"/ticket/36827\" title=\"Ticket #36827\"
+        />\n    <link rel=\"next\"  href=\"/ticket/34679\" title=\"Ticket #34679\"
+        />\n    <link rel=\"alternate\"  class=\"rss\" href=\"/ticket/34678?format=rss\"
+        title=\"RSS Feed\" type=\"application/rss+xml\" />\n    <link rel=\"alternate\"
+        \ class=\"csv\" href=\"/ticket/34678?format=csv\" title=\"Comma-delimited
+        Text\" type=\"text/csv\" />\n    <link rel=\"alternate\"  class=\"tab\" href=\"/ticket/34678?format=tab\"
+        title=\"Tab-delimited Text\" type=\"text/tab-separated-values\" />\n    <noscript>\n
+        \     <style>\n        .trac-noscript { display: none !important }\n      </style>
+        \    </noscript>\n    <link type=\"application/opensearchdescription+xml\"
+        rel=\"search\"\n          href=\"/search/opensearch\"\n          title=\"Search
+        Django\"/>\n    <script>\n      var comments_prefs={\"comments_order\":\"oldest\",\"show_comments\":\"true\",\"show_prop_changes\":\"true\"};\n
+        \     var old_values={\"cc\":\"\",\"changetime\":\"2023-06-26T04:56:32Z\",\"component\":\"Documentation\",\"description\":\"I
+        believe that there is some sort of effort underway to encourage people towards
+        using the Django forum and Django Discord rather than the mailing list and
+        IRC channel?\\r\\n\\r\\nIf so, perhaps updating the `README.rst` file in the
+        root of the project to make mention of these resources (as opposed to only
+        mentioning the mailing list and IRC channel at present) would be appropriate?\",\"easy\":\"1\",\"has_patch\":\"1\",\"id\":34678,\"keywords\":\"\",\"needs_better_patch\":\"0\",\"needs_docs\":\"0\",\"needs_tests\":\"0\",\"owner\":\"anorthall\",\"reporter\":\"anorthall\",\"resolution\":\"fixed\",\"severity\":\"Normal\",\"stage\":\"Ready
+        for checkin\",\"status\":\"closed\",\"summary\":\"README.rst does not mention
+        the Django Discord or Django forum\",\"time\":\"2023-06-25T03:38:09Z\",\"type\":\"Cleanup/optimization\",\"ui_ux\":\"0\",\"version\":\"dev\"};\n
+        \     var changes=[{\"author\":\"felixxm\",\"cnum\":1,\"comment\":\"We can
+        add Django Discord channel and the Django Forum to the README, but I don't
+        see a reason to remove the IRC channel or the mailing list, see [https://docs.djangoproject.com/en/stable/#getting-help-sidebar
+        Getting Help in docs].\\r\\n\\r\\nFor the future, such small cleanup doesn't
+        require tickets.\\r\\n\\r\\n[https://github.com/django/django/pull/17008 PR]\",\"comment_history\":{\"0\":{\"author\":\"felixxm\",\"comment\":\"We
+        can add Django Discord channel and the Django Forum to the README, but I don't
+        see a reason to remove the IRC channel or the mailing list, see [https://docs.djangoproject.com/en/stable/#getting-help-sidebar
+        Getting Help in docs].\\r\\n\\r\\nFor the future, such small cleanup doesn't
+        require tickets.\\r\\n\\r\\n[https://github.com/django/django/pull/17008 PR]\",\"date\":1687668148128054}},\"date\":1687668148128054,\"fields\":{\"needs_better_patch\":{\"label\":\"Patch
+        needs improvement\",\"new\":\"1\",\"old\":\"0\",\"rendered\":\"set\"},\"owner\":{\"label\":\"Owner\",\"new\":\"anorthall\",\"old\":\"nobody\",\"rendered\":\"\\\"changed
+        from \\\\u003cspan class=\\\\\\\"trac-author\\\\\\\"\\\\u003enobody\\\\u003c/span\\\\u003e
+        to \\\\u003cspan class=\\\\\\\"trac-author\\\\\\\"\\\\u003eAndrew Northall\\\\u003c/span\\\\u003e\\\"\"},\"stage\":{\"label\":\"Triage
+        Stage\",\"new\":\"Accepted\",\"old\":\"Unreviewed\",\"rendered\":\"\\\"\\\\u003cspan
+        class=\\\\\\\"trac-field-old\\\\\\\"\\\\u003eUnreviewed\\\\u003c/span\\\\u003e
+        \\u2192 \\\\u003cspan class=\\\\\\\"trac-field-new\\\\\\\"\\\\u003eAccepted\\\\u003c/span\\\\u003e\\\"\"},\"status\":{\"label\":\"Status\",\"new\":\"assigned\",\"old\":\"new\",\"rendered\":\"\\\"\\\\u003cspan
+        class=\\\\\\\"trac-field-old\\\\\\\"\\\\u003enew\\\\u003c/span\\\\u003e \\u2192
+        \\\\u003cspan class=\\\\\\\"trac-field-new\\\\\\\"\\\\u003eassigned\\\\u003c/span\\\\u003e\\\"\"}},\"permanent\":1},{\"author\":\"anorthall\",\"cnum\":2,\"comment\":\"Understood
+        and changed, thanks Mariusz. :-)\",\"comment_history\":{\"0\":{\"author\":\"anorthall\",\"comment\":\"Understood
+        and changed, thanks Mariusz. :-)\",\"date\":1687668777536276}},\"date\":1687668777536276,\"fields\":{\"needs_better_patch\":{\"label\":\"Patch
+        needs improvement\",\"new\":\"0\",\"old\":\"1\",\"rendered\":\"unset\"}},\"permanent\":1},{\"author\":\"felixxm\",\"cnum\":3,\"comment\":\"\",\"comment_history\":{\"0\":{\"author\":\"felixxm\",\"comment\":\"\",\"date\":1687750378012117}},\"date\":1687750378012117,\"fields\":{\"stage\":{\"label\":\"Triage
+        Stage\",\"new\":\"Ready for checkin\",\"old\":\"Accepted\",\"rendered\":\"\\\"\\\\u003cspan
+        class=\\\\\\\"trac-field-old\\\\\\\"\\\\u003eAccepted\\\\u003c/span\\\\u003e
+        \\u2192 \\\\u003cspan class=\\\\\\\"trac-field-new\\\\\\\"\\\\u003eReady for
+        checkin\\\\u003c/span\\\\u003e\\\"\"}},\"permanent\":1},{\"author\":\"Mariusz
+        Felisiak \\u003cfelisiak.mariusz@gmail.com\\u003e\",\"cnum\":4,\"comment\":\"In
+        [changeset:\\\"fcc5091b4a7c29e2912f6c8b2e0ebc64f4853457\\\" fcc5091]:\\n{{{\\n#!CommitTicketReference
+        repository=\\\"\\\" revision=\\\"fcc5091b4a7c29e2912f6c8b2e0ebc64f4853457\\\"\\nFixed
+        #34678 -- Added Django Forum and Discord server to README.rst.\\n}}}\",\"comment_history\":{\"0\":{\"author\":\"Mariusz
+        Felisiak \\u003cfelisiak.mariusz@gmail.com\\u003e\",\"comment\":\"In [changeset:\\\"fcc5091b4a7c29e2912f6c8b2e0ebc64f4853457\\\"
+        fcc5091]:\\n{{{\\n#!CommitTicketReference repository=\\\"\\\" revision=\\\"fcc5091b4a7c29e2912f6c8b2e0ebc64f4853457\\\"\\nFixed
+        #34678 -- Added Django Forum and Discord server to README.rst.\\n}}}\",\"date\":1687755392335892}},\"date\":1687755392335892,\"fields\":{\"resolution\":{\"label\":\"Resolution\",\"new\":\"fixed\",\"old\":\"\",\"rendered\":\"\\\"\\u2192
+        \\\\u003cspan class=\\\\\\\"trac-field-new\\\\\\\"\\\\u003efixed\\\\u003c/span\\\\u003e\\\"\"},\"status\":{\"label\":\"Status\",\"new\":\"closed\",\"old\":\"assigned\",\"rendered\":\"\\\"\\\\u003cspan
+        class=\\\\\\\"trac-field-old\\\\\\\"\\\\u003eassigned\\\\u003c/span\\\\u003e
+        \\u2192 \\\\u003cspan class=\\\\\\\"trac-field-new\\\\\\\"\\\\u003eclosed\\\\u003c/span\\\\u003e\\\"\"}},\"permanent\":1}];\n
+        \     var auto_preview_timeout=2.0;\n      var form_token=\"8224e5fcd4a3aea3c9e5aff4\";\n
+        \     var jquery_ui={\"ampm\":true,\"date_format\":\"M d, yy\",\"day_names\":{\"abbreviated\":[\"Sun\",\"Mon\",\"Tue\",\"Wed\",\"Thu\",\"Fri\",\"Sat\"],\"narrow\":[\"S\",\"M\",\"T\",\"W\",\"T\",\"F\",\"S\"],\"wide\":[\"Sunday\",\"Monday\",\"Tuesday\",\"Wednesday\",\"Thursday\",\"Friday\",\"Saturday\"]},\"default_timezone\":-360,\"first_week_day\":0,\"month_names\":{\"abbreviated\":[\"Jan\",\"Feb\",\"Mar\",\"Apr\",\"May\",\"Jun\",\"Jul\",\"Aug\",\"Sep\",\"Oct\",\"Nov\",\"Dec\"],\"wide\":[\"January\",\"February\",\"March\",\"April\",\"May\",\"June\",\"July\",\"August\",\"September\",\"October\",\"November\",\"December\"]},\"period_names\":{\"am\":[\"AM\",\"AM\"],\"pm\":[\"PM\",\"PM\"]},\"show_timezone\":false,\"time_format\":\"h:mm:ss
+        TT\",\"timepicker_separator\":\", \",\"timezone_iso8601\":false,\"timezone_list\":null};\n
+        \     var _tracdragdrop={\"base_url\":\"/\",\"can_create\":false,\"max_size\":262144,\"new_url\":\"/tracdragdrop/new/ticket/34678\",\"no_image_msg\":\"No
+        image \\\"%(id)s\\\" attached to %(parent)s\",\"parent_name\":\"Ticket #34678\",\"raw_parent_url\":\"/raw-attachment/ticket/34678/\"};\n
+        \   </script>\n    <script src=\"/chrome/common/js/jquery.js\"></script>\n
+        \   <script src=\"/chrome/common/js/babel.js\"></script>\n    <script src=\"/chrome/common/js/trac.js\"></script>\n
+        \   <script src=\"/chrome/common/js/search.js\"></script>\n    <script src=\"/chrome/common/js/folding.js\"></script>\n
+        \   <script src=\"/chrome/common/js/wikitoolbar.js\"></script>\n    <script
+        src=\"/chrome/common/js/resizer.js\"></script>\n    <script src=\"/chrome/common/js/auto_preview.js\"></script>\n
+        \   <script src=\"/chrome/common/js/jquery-ui.js\"></script>\n    <script
+        src=\"/chrome/common/js/jquery-ui-addons.js\"></script>\n    <script src=\"/chrome/common/js/jquery-ui-i18n.js\"></script>\n
+        \   <script src=\"/chrome/tracdragdrop/tracdragdrop.js\"></script>\n    <script>\n
+        \     jQuery(function($) {\n        $(\".trac-autofocus\").focus();\n        $(\".trac-target-new\").attr(\"target\",
+        \"_blank\");\n        if ($.ui) { /* is jquery-ui added? */\n          $(\".trac-datepicker:not([readonly])\")\n
+        \           .prop(\"autocomplete\", \"off\").datepicker();\n          // Input
+        current date when today is pressed.\n          var _goToToday = $.datepicker._gotoToday;\n
+        \         $.datepicker._gotoToday = function(id) {\n            _goToToday.call(this,
+        id);\n            this._selectDate(id)\n          };\n          $(\".trac-datetimepicker:not([readonly])\")\n
+        \           .prop(\"autocomplete\", \"off\").datetimepicker();\n        }\n
+        \       $(\".trac-disable\").disableSubmit(\".trac-disable-determinant\");\n
+        \       setTimeout(function() { $(\".trac-scroll\").scrollToTop() }, 1);\n
+        \       $(\".trac-disable-on-submit\").disableOnSubmit();\n      });\n    </script>\n
+        \   <!--   # include 'site_head.html' (layout.html) -->\n<meta name=\"viewport\"
+        content=\"width=device-width, initial-scale=1\" />\n<link rel=\"stylesheet\"
+        href=\"/chrome/site/css/output.css\" />\n<link rel=\"stylesheet\" href=\"/chrome/site/css/trachacks.css\"
+        />\n<!--! uncomment for local version of webfont loader if desired. -->\n<!--!
+        <script src=\"/chrome/site/js/lib/webfont.js\"></script> -->\n<script src=\"//ajax.googleapis.com/ajax/libs/webfont/1.5.6/webfont.js\"></script>\n<script>\n
+        \ WebFont.load({\n    google: {\n      families: ['Inconsolata:400,700:latin',
+        'Roboto:400italic,700italic,300,700,400:latin']\n    }\n  });\n</script>\n
+        \ <script type=\"text/javascript\" src=\"/chrome/site/tickethacks.js\"></script>\n
+        \   <!--   end of site_head.html -->\n    <!-- # endblock head (content inherited
+        from layout.html) -->\n\n\n    <script src=\"/chrome/common/js/threaded_comments.js\"></script>\n
+        \   <script>\n      jQuery(function($) {\n        $(\"div.description\").find(\"h1,h2,h3,h4,h5,h6\")\n
+        \         .addAnchor(_(\"Link to this section\"));\n        $(\".foldable\").enableFolding(false,
+        true);\n        $(\"#attachments\").toggleClass(\"collapsed\");\n        $(\"#trac-up-attachments\").click(function
+        () {\n          $(\"#attachments\").removeClass(\"collapsed\");\n          return
+        true;\n        });\n        $(\"#modify\").parent().toggleClass(\"collapsed\");\n
+        \       $(\".trac-topnav a\").click(function() {\n          $(\"#modify\").parent().removeClass(\"collapsed\");\n
+        \       });\n\n        function setRevertHandler() {\n          $(\"button.trac-revert\").click(function()
+        {\n            var div = $(\"div\", this);\n            var field_name = div[0].id.substr(7);\n
+        \           var field_value = div.text();\n            var input = $(\"#propertyform
+        *[name=field_\" + field_name + \"]\");\n            if (input.length > 0)
+        {\n              if (input.filter(\"input[type=radio]\").length > 0) {\n                input.val([field_value]);\n
+        \             } else if (input.filter(\"input[type=checkbox]\").length > 0)
+        {\n                input.val(field_value == \"1\" ? [field_value] : []);\n
+        \             } else {\n                input.val(field_value);\n              }\n
+        \           } else { // Special case for CC checkbox\n              input
+        = $(\"#propertyform input[name=cc_update]\").val([]);\n            }\n            input.change();\n
+        \           // Remove the revert button\n            if ($(this).closest(\"tbody\").children(\"tr\").length
+        === 1)\n              $(this).closest(\".trac-change-panel\").remove();\n
+        \           else\n              $(this).closest(\"tr\").remove();\n            return
+        false;\n          });\n        }\n        setRevertHandler();\n\n        var
+        comment_focused = false;\n        $(\"#comment\").focus(function() { comment_focused
+        = true; })\n                     .blur(function() { comment_focused = false;
+        });\n        $(\"#propertyform\").autoSubmit({preview: '1'}, function(data,
+        reply) {\n          var items = $(reply);\n          // Update ticket box\n
+        \         $(\"#ticket\").replaceWith(items.filter('#ticket'));\n          //
+        Replaces content of #changelog, without recreating it\n          $(\"#changelog\").empty().append(items.filter(\"#changelog\").contents());\n
+        \         // Apply comments order and \"Show\" preferences\n          applyCommentsOrder(\n
+        \           $('#prefs input[name=\"trac-comments-order\"]:checked').val());\n
+        \         // Show warnings\n          var new_changes = $(\"#changelog .trac-new\");\n
+        \         $(\"#trac-edit-warning\").toggle(new_changes.length != 0);\n          if
+        (new_changes.length != 0)\n            $(\"#changelog\").parent().show().removeClass(\"collapsed\");\n
+        \         $(\"#trac-preview-warning\").remove();\n          $(\"#trac-edit-warning\").before(items.filter('#trac-preview-warning'));\n
+        \         // Update view time\n          $(\"#propertyform input[name='view_time']\")\n
+        \           .replaceWith(items.filter(\"input[name='view_time']\"));\n          //
+        Update preview\n          var preview = $(\"#ticketchange\")\n            .html(items.filter('#preview').children());\n
+        \         var show_preview = preview.children().length != 0;\n          $(\"#ticketchange\").toggle(show_preview);\n
+        \         setRevertHandler();\n          // Execute scripts to load stylesheets\n
+        \         items.filter(\"script\").appendTo(\"head\");\n        }, \"#ticketchange
+        .trac-loading\");\n        $(\"#trac-comment-editor\")\n            .autoSubmit({preview_comment:
+        '1'}, function(data, reply) {\n          var comment = $(\"#trac-comment-editor\")\n
+        \           .next(\"div.comment\").html(reply);\n          comment.toggle(comment.children().length
+        != 0);\n        }, \"#changelog .trac-loading\");\n\n      });\n    </script>\n</head>\n\n<body
+        class=\"mdzr-boxshadow mdzr-svg\">\n<div role=\"banner\" id=\"top\">\n  <div
+        class=\"container\">\n    <a class=\"logo\" href=\"https://www.djangoproject.com/\">Django</a>\n
+        \   <p class=\"meta\">The web framework for perfectionists with deadlines.</p>\n
+        \   <nav role=\"navigation\">\n      <ul>\n        <li><a href=\"https://www.djangoproject.com/\">Overview</a></li>\n
+        \       <li><a href=\"https://www.djangoproject.com/download/\">Download</a></li>\n
+        \       <li><a href=\"https://docs.djangoproject.com/\">Documentation</a></li>\n
+        \       <li><a href=\"https://www.djangoproject.com/weblog/\">News</a></li>\n
+        \       <li><a href=\"https://www.djangoproject.com/community/\">Community</a></li>\n
+        \       <li>\n          <a href=\"https://github.com/django/django\" target=\"_blank\"
+        rel=\"noopener\">Code</a>\n        </li>\n        <li class=\"active\"><a
+        href=\"/\">Issues</a></li>\n        <li><a href=\"https://www.djangoproject.com/foundation/\">About</a></li>\n
+        \       <li><a href=\"https://www.djangoproject.com/fundraising/\">&#9829;
+        Donate</a></li>\n      </ul>\n    </nav>\n  </div>\n</div>  <div id=\"banner\">\n
+        \   <div class=\"copy-banner\">\n      <div class=\"container\">\n        <h1>Issues</h1>\n
+        \     </div>\n    </div>\n\n  <div class=\"container full-width\">\n    <div
+        role=\"main\">\n  <div id=\"metanav\" class=\"nav\">\n    <ul>\n        <li><a
+        href=\"/login?referer=/ticket/34678\">Login</a></li>\n      <li><a href=\"/prefs\">Preferences</a></li>\n
+        \   </ul>\n  </div>\n  <div id=\"mainnav\" class=\"nav\">\n  <ul><li  class=\"active
+        first\"><a href=\"/query\">View Tickets</a></li><li ><a href=\"/wiki/Reports\">Reports</a></li><li
+        ><a href=\"/timeline\">Timeline</a></li><li ><a href=\"/wiki\">Wiki</a></li><li
+        \ class=\"last\"><a href=\"/search\">Search</a></li></ul>\n</div>\n\n  <div
+        id=\"subnav\" class=\"nav\">\n</div>\n\n  <div id=\"main\" >\n\n    <div id=\"ctxtnav\"
+        class=\"nav\">\n      <h2>Context Navigation</h2>\n      <ul>\n        <li
+        \ class=\"first\"><span>&larr; <a class=\"prev\" href=\"/ticket/34677\" title=\"Ticket
+        #34677\">Previous Ticket</a></span></li>\n        <li  class=\"last\"><span><a
+        class=\"next\" href=\"/ticket/34679\" title=\"Ticket #34679\">Next Ticket</a>
+        &rarr;</span></li>\n      </ul>\n      <hr />\n    </div>\n    \n\n    \n\n
+        \   <div id=\"content\" class=\"ticket\">\n\n\n\n<div id=\"ticket\">\n  <div
+        id=\"ticketbox\" class=\"trac-content\">\n    <div class=\"date\">\n      <p>Opened
+        <a class=\"timeline\" href=\"/timeline?from=2023-06-24T22%3A38%3A09-05%3A00&amp;precision=second\"
+        title=\"See timeline at Jun 24, 2023, 10:38:09 PM\">3 years ago</a></p>\n
+        \     <p>Closed <a class=\"timeline\" href=\"/timeline?from=2023-06-25T23%3A56%3A32-05%3A00&amp;precision=second\"
+        title=\"See timeline at Jun 25, 2023, 11:56:32 PM\">3 years ago</a></p>\n
+        \   </div>\n\n\n    <h2>\n      <a href=\"/ticket/34678\" class=\"trac-id\">#34678</a>\n
+        \     <span class=\"trac-status\">\n        <a href=\"/query?status=closed\">closed</a>\n
+        \     </span>\n      <span class=\"trac-type\">\n        <a href=\"/query?status=!closed&amp;type=Cleanup%2Foptimization\">Cleanup/optimization</a>\n
+        \     </span>\n      <span class=\"trac-resolution\">\n        (<a href=\"/query?resolution=fixed&amp;status=closed\">fixed</a>)\n
+        \     </span>\n    </h2>\n\n    <h1 id=\"trac-ticket-title\" class=\"searchable\">\n
+        \     <span class=\"summary\">README.rst does not mention the Django Discord
+        or Django forum</span>\n    </h1>\n\n    <table class=\"properties\">\n\n
+        \     <tr>\n        <th id=\"h_reporter\">Reported by:</th>\n        <td class=\"searchable\"
+        headers=\"h_reporter\"><a class=\"trac-author\" href=\"/query?reporter=anorthall&amp;status=!closed\">Andrew
+        Northall</a></td>\n\n        <th id=\"h_owner\">Owned by:</th>\n        <td
+        headers=\"h_owner\"><a class=\"trac-author\" href=\"/query?owner=anorthall&amp;status=!closed\">Andrew
+        Northall</a></td>\n      </tr>\n      <tr>\n        <th id=\"h_component\">\n
+        \         Component:\n        </th>\n        <td headers=\"h_component\">\n
+        \         <a href=\"/query?component=Documentation&amp;status=!closed\">Documentation</a>\n
+        \       </td>\n        <th id=\"h_version\">\n          Version:\n        </th>\n
+        \       <td headers=\"h_version\">\n          <a href=\"/query?status=!closed&amp;version=dev\"
+        title=\"Released Sep 17, 2025, 2:33:58 PM\">dev</a>\n        </td>\n      </tr>\n
+        \     <tr>\n        <th id=\"h_severity\">\n          Severity:\n        </th>\n
+        \       <td headers=\"h_severity\">\n          <a href=\"/query?severity=Normal&amp;status=!closed\">Normal</a>\n
+        \       </td>\n        <th class=\"missing\" id=\"h_keywords\">\n          Keywords:\n
+        \       </th>\n        <td class=\"searchable\" headers=\"h_keywords\">\n
+        \         \n        </td>\n      </tr>\n      <tr>\n        <th class=\"missing\"
+        id=\"h_cc\">\n          Cc:\n        </th>\n        <td class=\"searchable\"
+        headers=\"h_cc\">\n          \n        </td>\n        <th id=\"h_stage\">\n
+        \         Triage Stage:\n        </th>\n        <td headers=\"h_stage\">\n
+        \         <a href=\"/query?stage=Ready+for+checkin&amp;status=!closed\">Ready
+        for checkin</a>\n        </td>\n      </tr>\n      <tr>\n        <th id=\"h_has_patch\">\n
+        \         Has patch:\n        </th>\n        <td headers=\"h_has_patch\">\n
+        \         <a href=\"/query?has_patch=1&amp;status=!closed\">yes</a>\n        </td>\n
+        \       <th id=\"h_needs_docs\">\n          Needs documentation:\n        </th>\n
+        \       <td headers=\"h_needs_docs\">\n          <a href=\"/query?needs_docs=0&amp;status=!closed\">no</a>\n
+        \       </td>\n      </tr>\n      <tr>\n        <th id=\"h_needs_tests\">\n
+        \         Needs tests:\n        </th>\n        <td headers=\"h_needs_tests\">\n
+        \         <a href=\"/query?needs_tests=0&amp;status=!closed\">no</a>\n        </td>\n
+        \       <th id=\"h_needs_better_patch\">\n          Patch needs improvement:\n
+        \       </th>\n        <td headers=\"h_needs_better_patch\">\n          <a
+        href=\"/query?needs_better_patch=0&amp;status=!closed\">no</a>\n        </td>\n
+        \     </tr>\n      <tr>\n        <th id=\"h_easy\">\n          Easy pickings:\n
+        \       </th>\n        <td headers=\"h_easy\">\n          <a href=\"/query?easy=1&amp;status=!closed\">yes</a>\n
+        \       </td>\n        <th id=\"h_ui_ux\">\n          UI/UX:\n        </th>\n
+        \       <td headers=\"h_ui_ux\">\n          <a href=\"/query?status=!closed&amp;ui_ux=0\">no</a>\n
+        \       </td>\n      </tr>\n    </table>\n    <div class=\"description\">\n
+        \     <h2 id=\"comment:description\">Description\n      </h2>\n\n\n\n      <script>\n
+        \       // float left elements like inlinebuttons will be presented in\n        //
+        right-to-left order, i.e. those added before #addreply will\n        // be
+        on the right, those added after will be on the left\n        function insertNearReplyToDescription(content,
+        side) {\n          if (side === 'right') {\n            $(\"#ticket .description
+        #addreply\").before(content);\n          } else if (side === 'rightmost')
+        {\n            $(\"#ticket .description > h2\").after(content);\n          }
+        else if (side === 'leftmost') {\n            $(\"#ticket .description\").children(\".searchable,
+        br\")\n              .before(content);\n          } else { // 'left'\n            $(\"#ticket
+        .description #addreply\").after(content);\n          }\n        }\n      </script>\n\n
+        \     <div class=\"searchable\">\n        <p>\nI believe that there is some
+        sort of effort underway to encourage people towards using the Django forum
+        and Django Discord rather than the mailing list and IRC channel?<br />\n</p>\n<p>\nIf
+        so, perhaps updating the <code>README.rst</code> file in the root of the project
+        to make mention of these resources (as opposed to only mentioning the mailing
+        list and IRC channel at present) would be appropriate?<br />\n</p>\n\n      </div>\n
+        \   </div>\n  </div>\n</div>\n\n\n\n\n\n\n      <div>\n        <div class=\"trac-noscript\"
+        style=\"position: relative\">\n          <form id=\"prefs\" method=\"get\"
+        action=\"/prefs\"\n                style=\"position: absolute; right: 0\">\n
+        \           <div id=\"trac-comments-order\">\n              <input type=\"radio\"
+        id=\"trac-comments-oldest\"\n                     name=\"trac-comments-order\"
+        value=\"oldest\"\n                     checked=\"checked\" />\n              <label
+        for=\"trac-comments-oldest\">Oldest first</label>\n              <input type=\"radio\"
+        id=\"trac-comments-newest\"\n                     name=\"trac-comments-order\"
+        value=\"newest\" />\n              <label for=\"trac-comments-newest\">Newest
+        first</label>\n              <span id=\"trac-threaded-toggle\" style=\"display:
+        none\">\n                <input type=\"radio\" id=\"trac-comments-threaded\"\n
+        \                      name=\"trac-comments-order\" value=\"threaded\" />\n
+        \               <label for=\"trac-comments-threaded\">Threaded</label>\n              </span>\n
+        \           </div>\n            <div>\n              <input id=\"trac-show-comments-toggle\"
+        type=\"checkbox\"\n                     checked=\"checked\" />\n              <label
+        for=\"trac-show-comments-toggle\">Show comments</label>\n              <input
+        id=\"trac-show-property-changes-toggle\" type=\"checkbox\" />\n              <label
+        for=\"trac-show-property-changes-toggle\">\n                Show property
+        changes</label>\n            </div>\n          </form>\n        </div>\n\n
+        \       <h3 class=\"foldable\">\n          Change History\n          <span
+        class=\"trac-count\">(4)</span></h3>\n\n        <div id=\"changelog\">\n          <div
+        class=\"change\" id=\"trac-change-1-1687668148128054\">\n\n\n\n\n\n\n<h3 class=\"change\"
+        id=\"comment:1\">\n  <span class=\"threading\">\n  </span>\n  <span class=\"cnum\"><a
+        href=\"#comment:1\" class=\"\">comment:1</a>\n</span>\n  by <span class=\"trac-author\">Mariusz
+        Felisiak</span>, <a class=\"timeline\" href=\"/timeline?from=2023-06-24T23%3A42%3A28-05%3A00&amp;precision=second\"
+        title=\"See timeline at Jun 24, 2023, 11:42:28 PM\">3 years ago</a>\n\n</h3>\n\n<div
+        class=\"trac-change-panel\">\n\n\n\n  <div class=\"trac-ticket-buttons\">\n
+        \ </div>\n\n\n  <table class=\"changes\">\n\n\n    <tr class=\"trac-field-owner\">\n
+        \     <th class=\"trac-field-owner\">Owner:</th>\n      <td>\n        changed
+        from <span class=\"trac-author\">nobody</span> to <span class=\"trac-author\">Andrew
+        Northall</span>\n      </td>\n    </tr>\n\n    <tr class=\"trac-field-needs_better_patch\">\n
+        \     <th class=\"trac-field-needs_better_patch\">Patch needs improvement:</th>\n
+        \     <td>\n        set\n      </td>\n    </tr>\n\n    <tr class=\"trac-field-status\">\n
+        \     <th class=\"trac-field-status\">Status:</th>\n      <td>\n        <span
+        class=\"trac-field-old\">new</span> \u2192 <span class=\"trac-field-new\">assigned</span>\n
+        \     </td>\n    </tr>\n\n    <tr class=\"trac-field-stage\">\n      <th class=\"trac-field-stage\">Triage
+        Stage:</th>\n      <td>\n        <span class=\"trac-field-old\">Unreviewed</span>
+        \u2192 <span class=\"trac-field-new\">Accepted</span>\n      </td>\n    </tr>\n
+        \ </table>\n</div>\n\n\n\n\n\n<div class=\"comment searchable\">\n  <p>\nWe
+        can add Django Discord channel and the Django Forum to the README, but I don't
+        see a reason to remove the IRC channel or the mailing list, see <a class=\"ext-link\"
+        href=\"https://docs.djangoproject.com/en/stable/#getting-help-sidebar\"><span
+        class=\"icon\">\u200B</span>Getting Help in docs</a>.<br />\n</p>\n<p>\nFor
+        the future, such small cleanup doesn't require tickets.<br />\n</p>\n<p>\n<a
+        class=\"ext-link\" href=\"https://github.com/django/django/pull/17008\"><span
+        class=\"icon\">\u200B</span>PR</a><br />\n</p>\n\n</div>\n          </div>\n
+        \         <div class=\"change\" id=\"trac-change-2-1687668777536276\">\n\n\n\n\n\n\n<h3
+        class=\"change\" id=\"comment:2\">\n  <span class=\"threading\">\n  </span>\n
+        \ <span class=\"cnum\"><a href=\"#comment:2\" class=\"\">comment:2</a>\n</span>\n
+        \ by <span class=\"trac-author\">Andrew Northall</span>, <a class=\"timeline\"
+        href=\"/timeline?from=2023-06-24T23%3A52%3A57-05%3A00&amp;precision=second\"
+        title=\"See timeline at Jun 24, 2023, 11:52:57 PM\">3 years ago</a>\n\n</h3>\n\n<div
+        class=\"trac-change-panel\">\n\n\n\n  <div class=\"trac-ticket-buttons\">\n
+        \ </div>\n\n\n  <table class=\"changes\">\n\n\n    <tr class=\"trac-field-needs_better_patch\">\n
+        \     <th class=\"trac-field-needs_better_patch\">Patch needs improvement:</th>\n
+        \     <td>\n        unset\n      </td>\n    </tr>\n  </table>\n</div>\n\n\n\n\n\n<div
+        class=\"comment searchable\">\n  <p>\nUnderstood and changed, thanks Mariusz.
+        :-)<br />\n</p>\n\n</div>\n          </div>\n          <div class=\"change\"
+        id=\"trac-change-3-1687750378012117\">\n\n\n\n\n\n\n<h3 class=\"change\" id=\"comment:3\">\n
+        \ <span class=\"threading\">\n  </span>\n  <span class=\"cnum\"><a href=\"#comment:3\"
+        class=\"\">comment:3</a>\n</span>\n  by <span class=\"trac-author\">Mariusz
+        Felisiak</span>, <a class=\"timeline\" href=\"/timeline?from=2023-06-25T22%3A32%3A58-05%3A00&amp;precision=second\"
+        title=\"See timeline at Jun 25, 2023, 10:32:58 PM\">3 years ago</a>\n\n</h3>\n\n<div
+        class=\"trac-change-panel\">\n\n\n\n  <div class=\"trac-ticket-buttons\">\n
+        \ </div>\n\n\n  <table class=\"changes\">\n\n\n    <tr class=\"trac-field-stage\">\n
+        \     <th class=\"trac-field-stage\">Triage Stage:</th>\n      <td>\n        <span
+        class=\"trac-field-old\">Accepted</span> \u2192 <span class=\"trac-field-new\">Ready
+        for checkin</span>\n      </td>\n    </tr>\n  </table>\n</div>\n\n\n\n\n\n
+        \         </div>\n          <div class=\"change\" id=\"trac-change-4-1687755392335892\">\n\n\n\n\n\n\n<h3
+        class=\"change\" id=\"comment:4\">\n  <span class=\"threading\">\n  </span>\n
+        \ <span class=\"cnum\"><a href=\"#comment:4\" class=\"\">comment:4</a>\n</span>\n
+        \ by <span class=\"trac-author\">Mariusz Felisiak &lt;felisiak.mariusz@\u2026&gt;</span>,
+        <a class=\"timeline\" href=\"/timeline?from=2023-06-25T23%3A56%3A32-05%3A00&amp;precision=second\"
+        title=\"See timeline at Jun 25, 2023, 11:56:32 PM\">3 years ago</a>\n\n</h3>\n\n<div
+        class=\"trac-change-panel\">\n\n\n\n  <div class=\"trac-ticket-buttons\">\n
+        \ </div>\n\n\n  <table class=\"changes\">\n\n\n    <tr class=\"trac-field-resolution\">\n
+        \     <th class=\"trac-field-resolution\">Resolution:</th>\n      <td>\n        \u2192
+        <span class=\"trac-field-new\">fixed</span>\n      </td>\n    </tr>\n\n    <tr
+        class=\"trac-field-status\">\n      <th class=\"trac-field-status\">Status:</th>\n
+        \     <td>\n        <span class=\"trac-field-old\">assigned</span> \u2192
+        <span class=\"trac-field-new\">closed</span>\n      </td>\n    </tr>\n  </table>\n</div>\n\n\n\n\n\n<div
+        class=\"comment searchable\">\n  <p>\nIn <a class=\"changeset\" href=\"/changeset/fcc5091b4a7c29e2912f6c8b2e0ebc64f4853457\"
+        title=\"Fixed #34678 -- Added Django Forum and Discord server to README.rst.\">fcc5091</a>:<br
+        />\n</p>\n<div class=\"message\"><p>\nFixed <a class=\"closed ticket\" href=\"/ticket/34678\"
+        title=\"#34678: Cleanup/optimization: README.rst does not mention the Django
+        Discord or Django forum (closed: fixed)\">#34678</a> -- Added Django Forum
+        and Discord server to README.rst.<br />\n</p>\n</div>\n</div>\n          </div>\n
+        \         <script>\n            // inlinebuttons in ticket change are presented
+        in\n            // left-to-right order, i.e. those added before\n            //
+        #reply-to-comment-n will be on its left, those added\n            // after
+        will be on its right\n            function insertNearReplyToComment(num, content,
+        side) {\n              var $replyto = $(\"#reply-to-comment-\" + num);\n              if
+        (side === 'right') {\n                $replyto.after(content);\n              }
+        else if (side === 'rightmost') {\n                $replyto.parent().append(content);\n
+        \             } else if (side === 'leftmost') {\n                $replyto.parent().prepend(content);\n
+        \             } else { // 'left'\n                $replyto.before(content);\n
+        \             }\n            }\n          </script>\n\n        </div>\n      </div>\n\n\n<div
+        class=\"trac-help\">\n  <strong>Note:</strong>\n See   <a href=\"/wiki/TracTickets\">TracTickets</a>\n
+        for help on using tickets.\n</div>\n    </div>\n        <!-- # block content
+        (content inherited from layout.html) -->\n    <script type=\"text/javascript\">\n
+        \     jQuery(\"body\").addClass(\"trac-has-js\");\n    </script>\n    <div
+        id=\"altlinks\">\n      <h3>Download in other formats:</h3>\n      <ul>\n
+        \       <li class=\"first\">\n          <a rel=\"nofollow\" href=\"/ticket/34678?format=rss\"\n
+        \             class=\"rss\">\n            RSS Feed</a>\n        </li>\n        <li
+        class=\"\">\n          <a rel=\"nofollow\" href=\"/ticket/34678?format=csv\"\n
+        \             class=\"csv\">\n            Comma-delimited Text</a>\n        </li>\n
+        \       <li class=\"last\">\n          <a rel=\"nofollow\" href=\"/ticket/34678?format=tab\"\n
+        \             class=\"tab\">\n            Tab-delimited Text</a>\n        </li>\n
+        \     </ul>\n    </div>\n    <!-- # endblock content (content inherited from
+        layout.html) -->\n\n  </div>\n  <a href=\"#top\" class=\"backtotop\"><i class=\"icon
+        icon-chevron-up\"></i> Back to Top</a>\n</div>\n\n  </div>\n<div role=\"contentinfo\">\n
+        \ <div class=\"subfooter\">\n    <div class=\"container\">\n      <h1 class=\"visuallyhidden\">Django
+        Links</h1>\n      <div class=\"column-container\">\n        <div class=\"col-learn-more\">\n
+        \         <h2>Learn More</h2>\n          <ul>\n            <li><a href=\"https://www.djangoproject.com/overview/\">About
+        Django</a></li>\n            <li><a href=\"https://www.djangoproject.com/start/\">Getting
+        Started with Django</a></li>\n            <li><a href=\"https://www.djangoproject.com/foundation/teams/\">Team
+        Organization</a></li>\n            <li><a href=\"https://www.djangoproject.com/foundation/\">Django
+        Software Foundation</a></li>\n            <li><a href=\"https://www.djangoproject.com/conduct/\">Code
+        of Conduct</a></li>\n            <li><a href=\"https://www.djangoproject.com/diversity/\">Diversity
+        Statement</a></li>\n          </ul>\n        </div>\n\n        <div class=\"col-get-involved\">\n
+        \         <h2>Get Involved</h2>\n          <ul>\n            <li><a href=\"https://www.djangoproject.com/community/\">Join
+        a Group</a></li>\n            <li><a href=\"https://docs.djangoproject.com/en/dev/internals/contributing/\">Contribute
+        to Django</a></li>\n            <li><a href=\"https://docs.djangoproject.com/en/dev/internals/contributing/bugs-and-features/#reporting-security-issues\">Submit
+        a Bug</a></li>\n            <li><a href=\"https://docs.djangoproject.com/en/dev/internals/security/\">Report
+        a Security Issue</a></li>\n            <li><a href=\"https://www.djangoproject.com/foundation/individual-members/\">Individual
+        membership</a></li>\n          </ul>\n        </div>\n\n        <div class=\"col-get-help\">\n
+        \         <h2>Get Help</h2>\n          <ul>\n            <li><a href=\"https://docs.djangoproject.com/en/dev/faq/\">Getting
+        Help FAQ</a></li>\n            <li><a href=\"https://chat.djangoproject.com\"
+        target=\"_blank\">Django Discord</a></li>\n            <li><a href=\"https://forum.djangoproject.com/\"
+        target=\"_blank\">Official Django Forum</a></li>\n          </ul>\n        </div>\n\n
+        \       <div class=\"col-follow-us\">\n          <h2>Follow Us</h2>\n          <ul>\n
+        \           <li><a href=\"http://github.com/django\">GitHub</a></li>\n            <li><a
+        href=\"https://twitter.com/djangoproject\">Twitter</a></li>\n            <li><a
+        href=\"https://fosstodon.org/@django\" rel=\"me\">Fediverse (Mastodon)</a></li>\n
+        \           <li><a href=\"https://www.djangoproject.com/rss/weblog/\">News
+        RSS</a></li>\n          </ul>\n        </div>\n\n        <div class=\"col-support-us\">\n
+        \         <h2>Support Us</h2>\n          <ul>\n            <li><a href=\"https://www.djangoproject.com/fundraising/\">Sponsor
+        Django</a></li>\n            <li><a href=\"https://www.djangoproject.com/foundation/corporate-membership/\">Corporate
+        membership</a></li>\n            <li><a href=\"https://django.threadless.com/\"
+        target=\"_blank\">Official merchandise store</a></li>\n            <li><a
+        href=\"https://www.djangoproject.com/foundation/donate/#benevity-giving\">Benevity
+        Workplace Giving Program</a></li>\n          </ul>\n        </div>\n\n      </div>\n
+        \   </div>\n  </div>\n\n  <div class=\"footer\">\n    <div class=\"container\">\n
+        \     <div class=\"footer-logo\">\n        <a class=\"logo\" href=\"https://djangoproject.com/\">Django</a>\n
+        \     </div>\n      <ul class=\"thanks\">\n        <li>\n          <span>Hosting
+        by</span> <a class=\"in-kind-donors\" href=\"https://www.djangoproject.com/fundraising/#in-kind-donors\">In-kind
+        donors</a>\n        </li>\n        <li class=\"design\"><span>Design by</span>
+        <a class=\"threespot\" href=\"http://www.threespot.com\">Threespot</a> <span
+        class=\"ampersand\">&amp;</span> <a class=\"andrevv\" href=\"http://andrevv.com/\"></a></li>\n
+        \     </ul>\n      <p class=\"copyright\">&copy; 2005-2025\n        <a href=\"https://djangoproject.com/foundation/\">
+        Django Software Foundation</a>\n        unless otherwise noted. Django is
+        a\n        <a href=\"https://djangoproject.com/trademarks/\">registered trademark</a>\n
+        \       of the Django Software Foundation.\n      </p>\n    </div>\n  </div>\n</div>\n\n<script
+        src=\"/chrome/site/js/mobile-menu.js\"></script></body>\n\n</html>"
+    headers:
+      Accept-Ranges:
+      - bytes
+      Cache-Control:
+      - must-revalidate
+      Connection:
+      - keep-alive
+      Content-Type:
+      - text/html;charset=utf-8
+      Date:
+      - Thu, 25 Dec 2025 14:05:44 GMT
+      Expires:
+      - Fri, 01 Jan 1999 00:00:00 GMT
+      Permissions-Policy:
+      - interest-cohort=()
+      Server:
+      - nginx
+      Set-Cookie:
+      - trac_form_token=8224e5fcd4a3aea3c9e5aff4; HttpOnly; Path=/; Secure
+      - trac_session=e0d87f14e4bf76a2141e2b06; expires=Wed, 25 Mar 2026 14:05:44 GMT;
+        HttpOnly; Path=/; Secure
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding
+      Via:
+      - 1.1 varnish, 1.1 varnish
+      X-Cache:
+      - MISS, MISS
+      X-Cache-Hits:
+      - 0, 0
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Served-By:
+      - cache-fra-etou8220037-FRA, cache-ams21082-AMS
+      X-Timer:
+      - S1766671545.735087,VS0,VE37
+      X-XSS-Protection:
+      - 1; mode=block
+      transfer-encoding:
+      - chunked
+    status:
+      code: 200
+      message: Ok
+version: 1

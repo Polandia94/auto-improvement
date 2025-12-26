@@ -1,0 +1,75 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/vnd.github.v3+json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.32.5
+    method: GET
+    uri: https://api.github.com/repos/django/django/readme
+  response:
+    body:
+      string: '{"name":"README.rst","path":"README.rst","sha":"b7532e6b5ad352fe5d560962f8c59356d2424fae","size":2017,"url":"https://api.github.com/repos/django/django/contents/README.rst?ref=main","html_url":"https://github.com/django/django/blob/main/README.rst","git_url":"https://api.github.com/repos/django/django/git/blobs/b7532e6b5ad352fe5d560962f8c59356d2424fae","download_url":"https://raw.githubusercontent.com/django/django/main/README.rst","type":"file","content":"PT09PT09CkRqYW5nbwo9PT09PT0KCkRqYW5nbyBpcyBhIGhpZ2gtbGV2ZWwg\nUHl0aG9uIHdlYiBmcmFtZXdvcmsgdGhhdCBlbmNvdXJhZ2VzIHJhcGlkIGRl\ndmVsb3BtZW50CmFuZCBjbGVhbiwgcHJhZ21hdGljIGRlc2lnbi4gVGhhbmtz\nIGZvciBjaGVja2luZyBpdCBvdXQuCgpBbGwgZG9jdW1lbnRhdGlvbiBpcyBp\nbiB0aGUgImBgZG9jc2BgIiBkaXJlY3RvcnkgYW5kIG9ubGluZSBhdApodHRw\nczovL2RvY3MuZGphbmdvcHJvamVjdC5jb20vZW4vc3RhYmxlLy4gSWYgeW91\nJ3JlIGp1c3QgZ2V0dGluZyBzdGFydGVkLApoZXJlJ3MgaG93IHdlIHJlY29t\nbWVuZCB5b3UgcmVhZCB0aGUgZG9jczoKCiogRmlyc3QsIHJlYWQgYGBkb2Nz\nL2ludHJvL2luc3RhbGwudHh0YGAgZm9yIGluc3RydWN0aW9ucyBvbiBpbnN0\nYWxsaW5nIERqYW5nby4KCiogTmV4dCwgd29yayB0aHJvdWdoIHRoZSB0dXRv\ncmlhbHMgaW4gb3JkZXIgKGBgZG9jcy9pbnRyby90dXRvcmlhbDAxLnR4dGBg\nLAogIGBgZG9jcy9pbnRyby90dXRvcmlhbDAyLnR4dGBgLCBldGMuKS4KCiog\nSWYgeW91IHdhbnQgdG8gc2V0IHVwIGFuIGFjdHVhbCBkZXBsb3ltZW50IHNl\ncnZlciwgcmVhZAogIGBgZG9jcy9ob3d0by9kZXBsb3ltZW50L2luZGV4LnR4\ndGBgIGZvciBpbnN0cnVjdGlvbnMuCgoqIFlvdSdsbCBwcm9iYWJseSB3YW50\nIHRvIHJlYWQgdGhyb3VnaCB0aGUgdG9waWNhbCBndWlkZXMgKGluIGBgZG9j\ncy90b3BpY3NgYCkKICBuZXh0OyBmcm9tIHRoZXJlIHlvdSBjYW4ganVtcCB0\nbyB0aGUgSE9XVE9zIChpbiBgYGRvY3MvaG93dG9gYCkgZm9yIHNwZWNpZmlj\nCiAgcHJvYmxlbXMsIGFuZCBjaGVjayBvdXQgdGhlIHJlZmVyZW5jZSAoYGBk\nb2NzL3JlZmBgKSBmb3IgZ29yeSBkZXRhaWxzLgoKKiBTZWUgYGBkb2NzL1JF\nQURNRWBgIGZvciBpbnN0cnVjdGlvbnMgb24gYnVpbGRpbmcgYW4gSFRNTCB2\nZXJzaW9uIG9mIHRoZSBkb2NzLgoKRG9jcyBhcmUgdXBkYXRlZCByaWdvcm91\nc2x5LiBJZiB5b3UgZmluZCBhbnkgcHJvYmxlbXMgaW4gdGhlIGRvY3MsIG9y\nIHRoaW5rCnRoZXkgc2hvdWxkIGJlIGNsYXJpZmllZCBpbiBhbnkgd2F5LCBw\nbGVhc2UgdGFrZSAzMCBzZWNvbmRzIHRvIGZpbGwgb3V0IGEKdGlja2V0IGhl\ncmU6IGh0dHBzOi8vY29kZS5kamFuZ29wcm9qZWN0LmNvbS9uZXd0aWNrZXQK\nClRvIGdldCBtb3JlIGhlbHA6CgoqIEpvaW4gdGhlIGBEamFuZ28gRGlzY29y\nZCBjb21tdW5pdHkgPGh0dHBzOi8vY2hhdC5kamFuZ29wcm9qZWN0LmNvbT5g\nXy4KCiogSm9pbiB0aGUgY29tbXVuaXR5IG9uIHRoZSBgRGphbmdvIEZvcnVt\nIDxodHRwczovL2ZvcnVtLmRqYW5nb3Byb2plY3QuY29tLz5gXy4KClRvIGNv\nbnRyaWJ1dGUgdG8gRGphbmdvOgoKKiBDaGVjayBvdXQgaHR0cHM6Ly9kb2Nz\nLmRqYW5nb3Byb2plY3QuY29tL2VuL2Rldi9pbnRlcm5hbHMvY29udHJpYnV0\naW5nLyBmb3IKICBpbmZvcm1hdGlvbiBhYm91dCBnZXR0aW5nIGludm9sdmVk\nLgoKVG8gcnVuIERqYW5nbydzIHRlc3Qgc3VpdGU6CgoqIEZvbGxvdyB0aGUg\naW5zdHJ1Y3Rpb25zIGluIHRoZSAiVW5pdCB0ZXN0cyIgc2VjdGlvbiBvZgog\nIGBgZG9jcy9pbnRlcm5hbHMvY29udHJpYnV0aW5nL3dyaXRpbmctY29kZS91\nbml0LXRlc3RzLnR4dGBgLCBwdWJsaXNoZWQgb25saW5lIGF0CiAgaHR0cHM6\nLy9kb2NzLmRqYW5nb3Byb2plY3QuY29tL2VuL2Rldi9pbnRlcm5hbHMvY29u\ndHJpYnV0aW5nL3dyaXRpbmctY29kZS91bml0LXRlc3RzLyNydW5uaW5nLXRo\nZS11bml0LXRlc3RzCgpTdXBwb3J0aW5nIHRoZSBEZXZlbG9wbWVudCBvZiBE\namFuZ28KPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CgpE\namFuZ28ncyBkZXZlbG9wbWVudCBkZXBlbmRzIG9uIHlvdXIgY29udHJpYnV0\naW9ucy4KCklmIHlvdSBkZXBlbmQgb24gRGphbmdvLCByZW1lbWJlciB0byBz\ndXBwb3J0IHRoZSBEamFuZ28gU29mdHdhcmUgRm91bmRhdGlvbjogaHR0cHM6\nLy93d3cuZGphbmdvcHJvamVjdC5jb20vZnVuZHJhaXNpbmcvCg==\n","encoding":"base64","_links":{"self":"https://api.github.com/repos/django/django/contents/README.rst?ref=main","git":"https://api.github.com/repos/django/django/git/blobs/b7532e6b5ad352fe5d560962f8c59356d2424fae","html":"https://github.com/django/django/blob/main/README.rst"}}'
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining,
+        X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes,
+        X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO,
+        X-GitHub-Request-Id, Deprecation, Sunset
+      Cache-Control:
+      - public, max-age=60, s-maxage=60
+      Content-Security-Policy:
+      - default-src 'none'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Thu, 25 Dec 2025 13:28:43 GMT
+      ETag:
+      - W/"b7532e6b5ad352fe5d560962f8c59356d2424fae"
+      Last-Modified:
+      - Wed, 24 Dec 2025 17:46:41 GMT
+      Referrer-Policy:
+      - origin-when-cross-origin, strict-origin-when-cross-origin
+      Server:
+      - github.com
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      Vary:
+      - Accept,Accept-Encoding, Accept, X-Requested-With
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - deny
+      X-GitHub-Media-Type:
+      - github.v3; format=json
+      X-GitHub-Request-Id:
+      - 9FC3:20A80F:1710C0A:1DA4C95:694D3C0B
+      X-RateLimit-Limit:
+      - '60'
+      X-RateLimit-Remaining:
+      - '50'
+      X-RateLimit-Reset:
+      - '1766672290'
+      X-RateLimit-Resource:
+      - core
+      X-RateLimit-Used:
+      - '10'
+      X-XSS-Protection:
+      - '0'
+      content-length:
+      - '3522'
+      x-github-api-version-selected:
+      - '2022-11-28'
+    status:
+      code: 200
+      message: OK
+version: 1

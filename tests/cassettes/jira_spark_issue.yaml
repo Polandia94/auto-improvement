@@ -1,0 +1,87 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.32.5
+    method: GET
+    uri: https://issues.apache.org/jira/rest/api/2/issue/SPARK-45000
+  response:
+    body:
+      string: '{"expand":"renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations","id":"13548917","self":"https://issues.apache.org/jira/rest/api/2/issue/13548917","key":"SPARK-45000","fields":{"parent":{"id":"13506146","key":"SPARK-41279","self":"https://issues.apache.org/jira/rest/api/2/issue/13506146","fields":{"summary":"Feature
+        parity: DataFrame API in Spark Connect","status":{"self":"https://issues.apache.org/jira/rest/api/2/status/1","description":"The
+        issue is open and ready for the assignee to start work on it.","iconUrl":"https://issues.apache.org/jira/images/icons/statuses/open.png","name":"Open","id":"1","statusCategory":{"self":"https://issues.apache.org/jira/rest/api/2/statuscategory/2","id":2,"key":"new","colorName":"blue-gray","name":"To
+        Do"}},"priority":{"self":"https://issues.apache.org/jira/rest/api/2/priority/2","iconUrl":"https://issues.apache.org/jira/images/icons/priorities/critical.svg","name":"Critical","id":"2"},"issuetype":{"self":"https://issues.apache.org/jira/rest/api/2/issuetype/14","id":"14","description":"An
+        overarching type made of sub-tasks","iconUrl":"https://issues.apache.org/jira/secure/viewavatar?size=xsmall&avatarId=21130&avatarType=issuetype","name":"Umbrella","subtask":false,"avatarId":21130}}},"fixVersions":[{"self":"https://issues.apache.org/jira/rest/api/2/version/12353359","id":"12353359","name":"4.0.0","archived":false,"released":true,"releaseDate":"2025-05-23"}],"resolution":{"self":"https://issues.apache.org/jira/rest/api/2/resolution/1","id":"1","description":"A
+        fix for this issue is checked into the tree and tested.","name":"Fixed"},"customfield_12312322":null,"customfield_12312323":null,"customfield_12310420":"9223372036854775807","customfield_12312320":null,"customfield_12312321":null,"customfield_12312328":null,"customfield_12312329":null,"customfield_12312326":null,"customfield_12312327":null,"customfield_12310300":null,"customfield_12312324":null,"customfield_12312720":null,"customfield_12312325":null,"lastViewed":null,"priority":{"self":"https://issues.apache.org/jira/rest/api/2/priority/3","iconUrl":"https://issues.apache.org/jira/images/icons/priorities/major.svg","name":"Major","id":"3"},"labels":[],"customfield_12312333":null,"customfield_12312334":null,"customfield_12313422":"false","customfield_12312331":null,"customfield_12310310":"0.0","customfield_12312332":null,"aggregatetimeoriginalestimate":null,"timeestimate":null,"customfield_12312330":null,"versions":[{"self":"https://issues.apache.org/jira/rest/api/2/version/12353359","id":"12353359","name":"4.0.0","archived":false,"released":true,"releaseDate":"2025-05-23"}],"customfield_12311120":null,"customfield_12313826":null,"issuelinks":[],"customfield_12312339":null,"customfield_12313825":null,"assignee":{"self":"https://issues.apache.org/jira/rest/api/2/user?username=gurwls223","name":"gurwls223","key":"gurwls223","avatarUrls":{"48x48":"https://issues.apache.org/jira/secure/useravatar?ownerId=gurwls223&avatarId=52219","24x24":"https://issues.apache.org/jira/secure/useravatar?size=small&ownerId=gurwls223&avatarId=52219","16x16":"https://issues.apache.org/jira/secure/useravatar?size=xsmall&ownerId=gurwls223&avatarId=52219","32x32":"https://issues.apache.org/jira/secure/useravatar?size=medium&ownerId=gurwls223&avatarId=52219"},"displayName":"Hyukjin
+        Kwon","active":true,"timeZone":"Etc/UTC"},"customfield_12312337":null,"customfield_12313823":null,"customfield_12312338":null,"customfield_12311920":null,"customfield_12313822":null,"customfield_12312335":null,"customfield_12313821":null,"customfield_12312336":null,"customfield_12313820":null,"status":{"self":"https://issues.apache.org/jira/rest/api/2/status/5","description":"A
+        resolution has been taken, and it is awaiting verification by reporter. From
+        here issues are either reopened, or are closed.","iconUrl":"https://issues.apache.org/jira/images/icons/statuses/resolved.png","name":"Resolved","id":"5","statusCategory":{"self":"https://issues.apache.org/jira/rest/api/2/statuscategory/3","id":3,"key":"done","colorName":"green","name":"Done"}},"components":[{"self":"https://issues.apache.org/jira/rest/api/2/component/12338540","id":"12338540","name":"Connect"},{"self":"https://issues.apache.org/jira/rest/api/2/component/12322606","id":"12322606","name":"PySpark","description":"Spark
+        Python API"}],"archiveddate":null,"customfield_12312026":null,"customfield_12312023":null,"customfield_12312024":null,"aggregatetimeestimate":null,"customfield_12312022":null,"customfield_12310921":null,"customfield_12310920":"9223372036854775807","customfield_12312823":null,"creator":{"self":"https://issues.apache.org/jira/rest/api/2/user?username=gurwls223","name":"gurwls223","key":"gurwls223","avatarUrls":{"48x48":"https://issues.apache.org/jira/secure/useravatar?ownerId=gurwls223&avatarId=52219","24x24":"https://issues.apache.org/jira/secure/useravatar?size=small&ownerId=gurwls223&avatarId=52219","16x16":"https://issues.apache.org/jira/secure/useravatar?size=xsmall&ownerId=gurwls223&avatarId=52219","32x32":"https://issues.apache.org/jira/secure/useravatar?size=medium&ownerId=gurwls223&avatarId=52219"},"displayName":"Hyukjin
+        Kwon","active":true,"timeZone":"Etc/UTC"},"subtasks":[],"reporter":{"self":"https://issues.apache.org/jira/rest/api/2/user?username=gurwls223","name":"gurwls223","key":"gurwls223","avatarUrls":{"48x48":"https://issues.apache.org/jira/secure/useravatar?ownerId=gurwls223&avatarId=52219","24x24":"https://issues.apache.org/jira/secure/useravatar?size=small&ownerId=gurwls223&avatarId=52219","16x16":"https://issues.apache.org/jira/secure/useravatar?size=xsmall&ownerId=gurwls223&avatarId=52219","32x32":"https://issues.apache.org/jira/secure/useravatar?size=medium&ownerId=gurwls223&avatarId=52219"},"displayName":"Hyukjin
+        Kwon","active":true,"timeZone":"Etc/UTC"},"aggregateprogress":{"progress":0,"total":0},"customfield_12313520":null,"customfield_12310250":null,"progress":{"progress":0,"total":0},"customfield_12313924":null,"votes":{"self":"https://issues.apache.org/jira/rest/api/2/issue/SPARK-45000/votes","votes":0,"hasVoted":false},"worklog":{"startAt":0,"maxResults":20,"total":0,"worklogs":[]},"archivedby":null,"customfield_12311620":null,"customfield_12313920":null,"issuetype":{"self":"https://issues.apache.org/jira/rest/api/2/issuetype/7","id":"7","description":"The
+        sub-task of the issue","iconUrl":"https://issues.apache.org/jira/secure/viewavatar?size=xsmall&avatarId=21146&avatarType=issuetype","name":"Sub-task","subtask":true,"avatarId":21146},"timespent":null,"customfield_12314020":"{summaryBean=com.atlassian.jira.plugin.devstatus.rest.SummaryBean@d47d486[summary={pullrequest=com.atlassian.jira.plugin.devstatus.rest.SummaryItemBean@1598b9c2[overall=PullRequestOverallBean{stateCount=0,
+        state=''OPEN'', details=PullRequestOverallDetails{openCount=0, mergedCount=0,
+        declinedCount=0}},byInstanceType={}], build=com.atlassian.jira.plugin.devstatus.rest.SummaryItemBean@6b95b7aa[overall=com.atlassian.jira.plugin.devstatus.summary.beans.BuildOverallBean@3b9345b3[failedBuildCount=0,successfulBuildCount=0,unknownBuildCount=0,count=0,lastUpdated=<null>,lastUpdatedTimestamp=<null>],byInstanceType={}],
+        review=com.atlassian.jira.plugin.devstatus.rest.SummaryItemBean@32e076e0[overall=com.atlassian.jira.plugin.devstatus.summary.beans.ReviewsOverallBean@478ed047[stateCount=0,state=<null>,dueDate=<null>,overDue=false,count=0,lastUpdated=<null>,lastUpdatedTimestamp=<null>],byInstanceType={}],
+        deployment-environment=com.atlassian.jira.plugin.devstatus.rest.SummaryItemBean@16017fb[overall=com.atlassian.jira.plugin.devstatus.summary.beans.DeploymentOverallBean@207f64b9[topEnvironments=[],showProjects=false,successfulCount=0,count=0,lastUpdated=<null>,lastUpdatedTimestamp=<null>],byInstanceType={}],
+        repository=com.atlassian.jira.plugin.devstatus.rest.SummaryItemBean@11994120[overall=com.atlassian.jira.plugin.devstatus.summary.beans.CommitOverallBean@20a4b7bc[count=0,lastUpdated=<null>,lastUpdatedTimestamp=<null>],byInstanceType={}],
+        branch=com.atlassian.jira.plugin.devstatus.rest.SummaryItemBean@21fab39c[overall=com.atlassian.jira.plugin.devstatus.summary.beans.BranchOverallBean@7a7b41b6[count=0,lastUpdated=<null>,lastUpdatedTimestamp=<null>],byInstanceType={}]},errors=[],configErrors=[]],
+        devSummaryJson={\"cachedValue\":{\"errors\":[],\"configErrors\":[],\"summary\":{\"pullrequest\":{\"overall\":{\"count\":0,\"lastUpdated\":null,\"stateCount\":0,\"state\":\"OPEN\",\"details\":{\"openCount\":0,\"mergedCount\":0,\"declinedCount\":0,\"total\":0},\"open\":true},\"byInstanceType\":{}},\"build\":{\"overall\":{\"count\":0,\"lastUpdated\":null,\"failedBuildCount\":0,\"successfulBuildCount\":0,\"unknownBuildCount\":0},\"byInstanceType\":{}},\"review\":{\"overall\":{\"count\":0,\"lastUpdated\":null,\"stateCount\":0,\"state\":null,\"dueDate\":null,\"overDue\":false,\"completed\":false},\"byInstanceType\":{}},\"deployment-environment\":{\"overall\":{\"count\":0,\"lastUpdated\":null,\"topEnvironments\":[],\"showProjects\":false,\"successfulCount\":0},\"byInstanceType\":{}},\"repository\":{\"overall\":{\"count\":0,\"lastUpdated\":null},\"byInstanceType\":{}},\"branch\":{\"overall\":{\"count\":0,\"lastUpdated\":null},\"byInstanceType\":{}}}},\"isStale\":false}}","customfield_12314141":null,"customfield_12314140":null,"project":{"self":"https://issues.apache.org/jira/rest/api/2/project/12315420","id":"12315420","key":"SPARK","name":"Spark","projectTypeKey":"software","avatarUrls":{"48x48":"https://issues.apache.org/jira/secure/projectavatar?pid=12315420&avatarId=27346","24x24":"https://issues.apache.org/jira/secure/projectavatar?size=small&pid=12315420&avatarId=27346","16x16":"https://issues.apache.org/jira/secure/projectavatar?size=xsmall&pid=12315420&avatarId=27346","32x32":"https://issues.apache.org/jira/secure/projectavatar?size=medium&pid=12315420&avatarId=27346"}},"aggregatetimespent":null,"customfield_12312520":null,"customfield_12312521":"Tue
+        Aug 29 09:07:49 UTC 2023","customfield_12314422":null,"customfield_12314421":null,"customfield_12314146":null,"customfield_12314420":null,"customfield_12314145":null,"customfield_12314144":null,"customfield_12314143":null,"resolutiondate":"2023-08-29T09:07:49.052+0000","workratio":-1,"customfield_12312923":null,"customfield_12312920":null,"customfield_12312921":null,"watches":{"self":"https://issues.apache.org/jira/rest/api/2/issue/SPARK-45000/watchers","watchCount":2,"isWatching":false},"created":"2023-08-29T04:05:14.085+0000","updated":"2023-08-29T09:07:49.058+0000","timeoriginalestimate":null,"description":null,"customfield_10010":null,"timetracking":{},"customfield_12314523":null,"customfield_12314127":null,"customfield_12314522":null,"customfield_12314126":null,"customfield_12314521":null,"customfield_12314125":null,"customfield_12310320":null,"customfield_12314520":null,"customfield_12314124":null,"customfield_12312340":null,"customfield_12314123":null,"customfield_12312341":null,"customfield_12312220":null,"customfield_12314122":null,"customfield_12314121":null,"customfield_12314120":null,"customfield_12314129":null,"customfield_12314524":null,"customfield_12314128":null,"summary":"Implement
+        DataFrame.foreach","customfield_12314130":null,"customfield_12310291":null,"customfield_12310290":null,"customfield_12311024":null,"customfield_12314138":null,"customfield_12314137":null,"environment":null,"customfield_12314136":null,"customfield_12314135":null,"customfield_12311020":null,"customfield_12314134":null,"duedate":null,"customfield_12314132":null,"customfield_12314131":null,"comment":{"comments":[{"self":"https://issues.apache.org/jira/rest/api/2/issue/13548917/comment/17759802","id":"17759802","author":{"self":"https://issues.apache.org/jira/rest/api/2/user?username=snoot","name":"snoot","key":"snoot","avatarUrls":{"48x48":"https://issues.apache.org/jira/secure/useravatar?avatarId=10452","24x24":"https://issues.apache.org/jira/secure/useravatar?size=small&avatarId=10452","16x16":"https://issues.apache.org/jira/secure/useravatar?size=xsmall&avatarId=10452","32x32":"https://issues.apache.org/jira/secure/useravatar?size=medium&avatarId=10452"},"displayName":"Snoot.io","active":true,"timeZone":"Etc/UTC"},"body":"User
+        ''HyukjinKwon'' has created a pull request for this issue:\nhttps://github.com/apache/spark/pull/42714","updateAuthor":{"self":"https://issues.apache.org/jira/rest/api/2/user?username=snoot","name":"snoot","key":"snoot","avatarUrls":{"48x48":"https://issues.apache.org/jira/secure/useravatar?avatarId=10452","24x24":"https://issues.apache.org/jira/secure/useravatar?size=small&avatarId=10452","16x16":"https://issues.apache.org/jira/secure/useravatar?size=xsmall&avatarId=10452","32x32":"https://issues.apache.org/jira/secure/useravatar?size=medium&avatarId=10452"},"displayName":"Snoot.io","active":true,"timeZone":"Etc/UTC"},"created":"2023-08-29T04:12:55.976+0000","updated":"2023-08-29T04:12:55.976+0000"},{"self":"https://issues.apache.org/jira/rest/api/2/issue/13548917/comment/17759881","id":"17759881","author":{"self":"https://issues.apache.org/jira/rest/api/2/user?username=dongjoon","name":"dongjoon","key":"dongjoon","avatarUrls":{"48x48":"https://issues.apache.org/jira/secure/useravatar?ownerId=dongjoon&avatarId=42503","24x24":"https://issues.apache.org/jira/secure/useravatar?size=small&ownerId=dongjoon&avatarId=42503","16x16":"https://issues.apache.org/jira/secure/useravatar?size=xsmall&ownerId=dongjoon&avatarId=42503","32x32":"https://issues.apache.org/jira/secure/useravatar?size=medium&ownerId=dongjoon&avatarId=42503"},"displayName":"Dongjoon
+        Hyun","active":true,"timeZone":"America/Los_Angeles"},"body":"Issue resolved
+        by pull request 42714\n[https://github.com/apache/spark/pull/42714]","updateAuthor":{"self":"https://issues.apache.org/jira/rest/api/2/user?username=dongjoon","name":"dongjoon","key":"dongjoon","avatarUrls":{"48x48":"https://issues.apache.org/jira/secure/useravatar?ownerId=dongjoon&avatarId=42503","24x24":"https://issues.apache.org/jira/secure/useravatar?size=small&ownerId=dongjoon&avatarId=42503","16x16":"https://issues.apache.org/jira/secure/useravatar?size=xsmall&ownerId=dongjoon&avatarId=42503","32x32":"https://issues.apache.org/jira/secure/useravatar?size=medium&ownerId=dongjoon&avatarId=42503"},"displayName":"Dongjoon
+        Hyun","active":true,"timeZone":"America/Los_Angeles"},"created":"2023-08-29T09:07:49.057+0000","updated":"2023-08-29T09:07:49.057+0000"}],"maxResults":2,"total":2,"startAt":0},"customfield_12311820":"0|z1k22o:","customfield_12314139":null}}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, no-transform
+      Connection:
+      - Keep-Alive
+      Content-Security-Policy:
+      - sandbox
+      Content-Type:
+      - application/json;charset=UTF-8
+      Date:
+      - Thu, 25 Dec 2025 14:05:45 GMT
+      Keep-Alive:
+      - timeout=3, max=100
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - Apache
+      Set-Cookie:
+      - atlassian.xsrf.token=A5KQ-2QAV-T4JA-FDED_dd0f7c42d52d6ceee040a70a279cd92d196aacf4_lout;
+        Path=/jira; Secure; SameSite=None
+      - JSESSIONID=21F4264AA3C3950F2D2AE2DF0C0AC955; Path=/jira; Secure; HttpOnly
+      Strict-Transport-Security:
+      - max-age=31536000
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      Via:
+      - 1.1 issues.apache.org
+      X-AREQUESTID:
+      - 845x160347529x5
+      X-AUSERNAME:
+      - anonymous
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - 1; mode=block
+      content-length:
+      - '14544'
+    status:
+      code: 200
+      message: ''
+version: 1

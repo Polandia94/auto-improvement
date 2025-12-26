@@ -1,0 +1,182 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/vnd.github.v3+json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.32.5
+    method: GET
+    uri: https://api.github.com/repos/django/django/pulls/18763
+  response:
+    body:
+      string: '{"url":"https://api.github.com/repos/django/django/pulls/18763","id":2160416001,"node_id":"PR_kwDOAD-Lgs6AxVUB","html_url":"https://github.com/django/django/pull/18763","diff_url":"https://github.com/django/django/pull/18763.diff","patch_url":"https://github.com/django/django/pull/18763.patch","issue_url":"https://api.github.com/repos/django/django/issues/18763","number":18763,"state":"closed","locked":false,"title":"Updated
+        instruction sentence on how to claim a ticket.","user":{"login":"mariahynes","id":12418697,"node_id":"MDQ6VXNlcjEyNDE4Njk3","avatar_url":"https://avatars.githubusercontent.com/u/12418697?v=4","gravatar_id":"","url":"https://api.github.com/users/mariahynes","html_url":"https://github.com/mariahynes","followers_url":"https://api.github.com/users/mariahynes/followers","following_url":"https://api.github.com/users/mariahynes/following{/other_user}","gists_url":"https://api.github.com/users/mariahynes/gists{/gist_id}","starred_url":"https://api.github.com/users/mariahynes/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/mariahynes/subscriptions","organizations_url":"https://api.github.com/users/mariahynes/orgs","repos_url":"https://api.github.com/users/mariahynes/repos","events_url":"https://api.github.com/users/mariahynes/events{/privacy}","received_events_url":"https://api.github.com/users/mariahynes/received_events","type":"User","user_view_type":"public","site_admin":false},"body":"####
+        Trac ticket number\r\nN/A\r\n\r\n#### Branch description\r\nThe page `contributing/writing-code/submitting-patches.html`
+        has been updated with this change. The issue was that the instructions on
+        how to assign a ticket to yourself was out of date and confusing for a first
+        time user of TRAC. This PR updates the sentence to accurately explain where
+        to click on the page to assign a ticket.\r\n\r\nThe original instruction which
+        is out of date with the UI:\r\n>![The current instructions which do not mention
+        the ''Modify ticket'' button](https://github.com/user-attachments/assets/70790108-e997-4a87-9fd7-4334ca06f07e)\r\n\r\nThe
+        new instruction which is more accurate:\r\n>![The updated sentence that mentions
+        the ''Modify ticket'' button](https://github.com/user-attachments/assets/bb58bf68-36f1-450a-bdae-1fa39bec966d)\r\n\r\n\r\n####
+        Checklist\r\n- [x] This PR targets the `main` branch. <!-- Backports will
+        be evaluated and done by mergers, when necessary. -->\r\n- [x] The commit
+        message is written in past tense, mentions the ticket number, and ends with
+        a period.\r\n- [ ] I have checked the \"Has patch\" ticket flag in the Trac
+        system.\r\n- [ ] I have added or updated relevant tests.\r\n- [ ] I have added
+        or updated relevant docs, including release notes if applicable.\r\n- [ ]
+        I have attached screenshots in both light and dark modes for any UI changes.\r\n","created_at":"2024-11-04T09:09:31Z","updated_at":"2024-11-05T15:59:34Z","closed_at":"2024-11-05T15:59:34Z","merged_at":"2024-11-05T15:59:34Z","merge_commit_sha":"db5980ddd1e739b7348662b07c9d91478d911877","assignee":null,"assignees":[],"requested_reviewers":[],"requested_teams":[],"labels":[{"id":6503859859,"node_id":"LA_kwDOAD-Lgs8AAAABg6kGkw","url":"https://api.github.com/repos/django/django/labels/Djangonauts%20:rocket:","name":"Djangonauts
+        :rocket:","color":"494E87","default":false,"description":""}],"milestone":null,"draft":false,"commits_url":"https://api.github.com/repos/django/django/pulls/18763/commits","review_comments_url":"https://api.github.com/repos/django/django/pulls/18763/comments","review_comment_url":"https://api.github.com/repos/django/django/pulls/comments{/number}","comments_url":"https://api.github.com/repos/django/django/issues/18763/comments","statuses_url":"https://api.github.com/repos/django/django/statuses/13707feb5bd858c0c38f7630ec3070ae558aefcc","head":{"label":"mariahynes:claiming_tickets_instruction_update","ref":"claiming_tickets_instruction_update","sha":"13707feb5bd858c0c38f7630ec3070ae558aefcc","user":{"login":"mariahynes","id":12418697,"node_id":"MDQ6VXNlcjEyNDE4Njk3","avatar_url":"https://avatars.githubusercontent.com/u/12418697?v=4","gravatar_id":"","url":"https://api.github.com/users/mariahynes","html_url":"https://github.com/mariahynes","followers_url":"https://api.github.com/users/mariahynes/followers","following_url":"https://api.github.com/users/mariahynes/following{/other_user}","gists_url":"https://api.github.com/users/mariahynes/gists{/gist_id}","starred_url":"https://api.github.com/users/mariahynes/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/mariahynes/subscriptions","organizations_url":"https://api.github.com/users/mariahynes/orgs","repos_url":"https://api.github.com/users/mariahynes/repos","events_url":"https://api.github.com/users/mariahynes/events{/privacy}","received_events_url":"https://api.github.com/users/mariahynes/received_events","type":"User","user_view_type":"public","site_admin":false},"repo":{"id":855093703,"node_id":"R_kgDOMvexxw","name":"django","full_name":"mariahynes/django","private":false,"owner":{"login":"mariahynes","id":12418697,"node_id":"MDQ6VXNlcjEyNDE4Njk3","avatar_url":"https://avatars.githubusercontent.com/u/12418697?v=4","gravatar_id":"","url":"https://api.github.com/users/mariahynes","html_url":"https://github.com/mariahynes","followers_url":"https://api.github.com/users/mariahynes/followers","following_url":"https://api.github.com/users/mariahynes/following{/other_user}","gists_url":"https://api.github.com/users/mariahynes/gists{/gist_id}","starred_url":"https://api.github.com/users/mariahynes/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/mariahynes/subscriptions","organizations_url":"https://api.github.com/users/mariahynes/orgs","repos_url":"https://api.github.com/users/mariahynes/repos","events_url":"https://api.github.com/users/mariahynes/events{/privacy}","received_events_url":"https://api.github.com/users/mariahynes/received_events","type":"User","user_view_type":"public","site_admin":false},"html_url":"https://github.com/mariahynes/django","description":"The
+        Web framework for perfectionists with deadlines.","fork":true,"url":"https://api.github.com/repos/mariahynes/django","forks_url":"https://api.github.com/repos/mariahynes/django/forks","keys_url":"https://api.github.com/repos/mariahynes/django/keys{/key_id}","collaborators_url":"https://api.github.com/repos/mariahynes/django/collaborators{/collaborator}","teams_url":"https://api.github.com/repos/mariahynes/django/teams","hooks_url":"https://api.github.com/repos/mariahynes/django/hooks","issue_events_url":"https://api.github.com/repos/mariahynes/django/issues/events{/number}","events_url":"https://api.github.com/repos/mariahynes/django/events","assignees_url":"https://api.github.com/repos/mariahynes/django/assignees{/user}","branches_url":"https://api.github.com/repos/mariahynes/django/branches{/branch}","tags_url":"https://api.github.com/repos/mariahynes/django/tags","blobs_url":"https://api.github.com/repos/mariahynes/django/git/blobs{/sha}","git_tags_url":"https://api.github.com/repos/mariahynes/django/git/tags{/sha}","git_refs_url":"https://api.github.com/repos/mariahynes/django/git/refs{/sha}","trees_url":"https://api.github.com/repos/mariahynes/django/git/trees{/sha}","statuses_url":"https://api.github.com/repos/mariahynes/django/statuses/{sha}","languages_url":"https://api.github.com/repos/mariahynes/django/languages","stargazers_url":"https://api.github.com/repos/mariahynes/django/stargazers","contributors_url":"https://api.github.com/repos/mariahynes/django/contributors","subscribers_url":"https://api.github.com/repos/mariahynes/django/subscribers","subscription_url":"https://api.github.com/repos/mariahynes/django/subscription","commits_url":"https://api.github.com/repos/mariahynes/django/commits{/sha}","git_commits_url":"https://api.github.com/repos/mariahynes/django/git/commits{/sha}","comments_url":"https://api.github.com/repos/mariahynes/django/comments{/number}","issue_comment_url":"https://api.github.com/repos/mariahynes/django/issues/comments{/number}","contents_url":"https://api.github.com/repos/mariahynes/django/contents/{+path}","compare_url":"https://api.github.com/repos/mariahynes/django/compare/{base}...{head}","merges_url":"https://api.github.com/repos/mariahynes/django/merges","archive_url":"https://api.github.com/repos/mariahynes/django/{archive_format}{/ref}","downloads_url":"https://api.github.com/repos/mariahynes/django/downloads","issues_url":"https://api.github.com/repos/mariahynes/django/issues{/number}","pulls_url":"https://api.github.com/repos/mariahynes/django/pulls{/number}","milestones_url":"https://api.github.com/repos/mariahynes/django/milestones{/number}","notifications_url":"https://api.github.com/repos/mariahynes/django/notifications{?since,all,participating}","labels_url":"https://api.github.com/repos/mariahynes/django/labels{/name}","releases_url":"https://api.github.com/repos/mariahynes/django/releases{/id}","deployments_url":"https://api.github.com/repos/mariahynes/django/deployments","created_at":"2024-09-10T09:45:53Z","updated_at":"2024-11-23T13:29:38Z","pushed_at":"2024-11-23T13:29:30Z","git_url":"git://github.com/mariahynes/django.git","ssh_url":"git@github.com:mariahynes/django.git","clone_url":"https://github.com/mariahynes/django.git","svn_url":"https://github.com/mariahynes/django","homepage":"https://www.djangoproject.com/","size":215269,"stargazers_count":0,"watchers_count":0,"language":"Python","has_issues":false,"has_projects":true,"has_downloads":true,"has_wiki":false,"has_pages":false,"has_discussions":false,"forks_count":0,"mirror_url":null,"archived":false,"disabled":false,"open_issues_count":0,"license":{"key":"bsd-3-clause","name":"BSD
+        3-Clause \"New\" or \"Revised\" License","spdx_id":"BSD-3-Clause","url":"https://api.github.com/licenses/bsd-3-clause","node_id":"MDc6TGljZW5zZTU="},"allow_forking":true,"is_template":false,"web_commit_signoff_required":false,"topics":[],"visibility":"public","forks":0,"open_issues":0,"watchers":0,"default_branch":"main"}},"base":{"label":"django:main","ref":"main","sha":"2bfb1211c0a88e4dd4ccf2220c320a221d7a5043","user":{"login":"django","id":27804,"node_id":"MDEyOk9yZ2FuaXphdGlvbjI3ODA0","avatar_url":"https://avatars.githubusercontent.com/u/27804?v=4","gravatar_id":"","url":"https://api.github.com/users/django","html_url":"https://github.com/django","followers_url":"https://api.github.com/users/django/followers","following_url":"https://api.github.com/users/django/following{/other_user}","gists_url":"https://api.github.com/users/django/gists{/gist_id}","starred_url":"https://api.github.com/users/django/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/django/subscriptions","organizations_url":"https://api.github.com/users/django/orgs","repos_url":"https://api.github.com/users/django/repos","events_url":"https://api.github.com/users/django/events{/privacy}","received_events_url":"https://api.github.com/users/django/received_events","type":"Organization","user_view_type":"public","site_admin":false},"repo":{"id":4164482,"node_id":"MDEwOlJlcG9zaXRvcnk0MTY0NDgy","name":"django","full_name":"django/django","private":false,"owner":{"login":"django","id":27804,"node_id":"MDEyOk9yZ2FuaXphdGlvbjI3ODA0","avatar_url":"https://avatars.githubusercontent.com/u/27804?v=4","gravatar_id":"","url":"https://api.github.com/users/django","html_url":"https://github.com/django","followers_url":"https://api.github.com/users/django/followers","following_url":"https://api.github.com/users/django/following{/other_user}","gists_url":"https://api.github.com/users/django/gists{/gist_id}","starred_url":"https://api.github.com/users/django/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/django/subscriptions","organizations_url":"https://api.github.com/users/django/orgs","repos_url":"https://api.github.com/users/django/repos","events_url":"https://api.github.com/users/django/events{/privacy}","received_events_url":"https://api.github.com/users/django/received_events","type":"Organization","user_view_type":"public","site_admin":false},"html_url":"https://github.com/django/django","description":"The
+        Web framework for perfectionists with deadlines.","fork":false,"url":"https://api.github.com/repos/django/django","forks_url":"https://api.github.com/repos/django/django/forks","keys_url":"https://api.github.com/repos/django/django/keys{/key_id}","collaborators_url":"https://api.github.com/repos/django/django/collaborators{/collaborator}","teams_url":"https://api.github.com/repos/django/django/teams","hooks_url":"https://api.github.com/repos/django/django/hooks","issue_events_url":"https://api.github.com/repos/django/django/issues/events{/number}","events_url":"https://api.github.com/repos/django/django/events","assignees_url":"https://api.github.com/repos/django/django/assignees{/user}","branches_url":"https://api.github.com/repos/django/django/branches{/branch}","tags_url":"https://api.github.com/repos/django/django/tags","blobs_url":"https://api.github.com/repos/django/django/git/blobs{/sha}","git_tags_url":"https://api.github.com/repos/django/django/git/tags{/sha}","git_refs_url":"https://api.github.com/repos/django/django/git/refs{/sha}","trees_url":"https://api.github.com/repos/django/django/git/trees{/sha}","statuses_url":"https://api.github.com/repos/django/django/statuses/{sha}","languages_url":"https://api.github.com/repos/django/django/languages","stargazers_url":"https://api.github.com/repos/django/django/stargazers","contributors_url":"https://api.github.com/repos/django/django/contributors","subscribers_url":"https://api.github.com/repos/django/django/subscribers","subscription_url":"https://api.github.com/repos/django/django/subscription","commits_url":"https://api.github.com/repos/django/django/commits{/sha}","git_commits_url":"https://api.github.com/repos/django/django/git/commits{/sha}","comments_url":"https://api.github.com/repos/django/django/comments{/number}","issue_comment_url":"https://api.github.com/repos/django/django/issues/comments{/number}","contents_url":"https://api.github.com/repos/django/django/contents/{+path}","compare_url":"https://api.github.com/repos/django/django/compare/{base}...{head}","merges_url":"https://api.github.com/repos/django/django/merges","archive_url":"https://api.github.com/repos/django/django/{archive_format}{/ref}","downloads_url":"https://api.github.com/repos/django/django/downloads","issues_url":"https://api.github.com/repos/django/django/issues{/number}","pulls_url":"https://api.github.com/repos/django/django/pulls{/number}","milestones_url":"https://api.github.com/repos/django/django/milestones{/number}","notifications_url":"https://api.github.com/repos/django/django/notifications{?since,all,participating}","labels_url":"https://api.github.com/repos/django/django/labels{/name}","releases_url":"https://api.github.com/repos/django/django/releases{/id}","deployments_url":"https://api.github.com/repos/django/django/deployments","created_at":"2012-04-28T02:47:18Z","updated_at":"2025-12-25T17:41:45Z","pushed_at":"2025-12-24T17:49:00Z","git_url":"git://github.com/django/django.git","ssh_url":"git@github.com:django/django.git","clone_url":"https://github.com/django/django.git","svn_url":"https://github.com/django/django","homepage":"https://www.djangoproject.com/","size":275912,"stargazers_count":86252,"watchers_count":86252,"language":"Python","has_issues":false,"has_projects":false,"has_downloads":true,"has_wiki":false,"has_pages":false,"has_discussions":false,"forks_count":33405,"mirror_url":null,"archived":false,"disabled":false,"open_issues_count":375,"license":{"key":"bsd-3-clause","name":"BSD
+        3-Clause \"New\" or \"Revised\" License","spdx_id":"BSD-3-Clause","url":"https://api.github.com/licenses/bsd-3-clause","node_id":"MDc6TGljZW5zZTU="},"allow_forking":true,"is_template":false,"web_commit_signoff_required":false,"topics":["apps","django","framework","models","orm","python","templates","views","web"],"visibility":"public","forks":33405,"open_issues":375,"watchers":86252,"default_branch":"main"}},"_links":{"self":{"href":"https://api.github.com/repos/django/django/pulls/18763"},"html":{"href":"https://github.com/django/django/pull/18763"},"issue":{"href":"https://api.github.com/repos/django/django/issues/18763"},"comments":{"href":"https://api.github.com/repos/django/django/issues/18763/comments"},"review_comments":{"href":"https://api.github.com/repos/django/django/pulls/18763/comments"},"review_comment":{"href":"https://api.github.com/repos/django/django/pulls/comments{/number}"},"commits":{"href":"https://api.github.com/repos/django/django/pulls/18763/commits"},"statuses":{"href":"https://api.github.com/repos/django/django/statuses/13707feb5bd858c0c38f7630ec3070ae558aefcc"}},"author_association":"CONTRIBUTOR","auto_merge":null,"active_lock_reason":null,"merged":true,"mergeable":null,"rebaseable":null,"mergeable_state":"unknown","merged_by":{"login":"sarahboyce","id":42296566,"node_id":"MDQ6VXNlcjQyMjk2NTY2","avatar_url":"https://avatars.githubusercontent.com/u/42296566?v=4","gravatar_id":"","url":"https://api.github.com/users/sarahboyce","html_url":"https://github.com/sarahboyce","followers_url":"https://api.github.com/users/sarahboyce/followers","following_url":"https://api.github.com/users/sarahboyce/following{/other_user}","gists_url":"https://api.github.com/users/sarahboyce/gists{/gist_id}","starred_url":"https://api.github.com/users/sarahboyce/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/sarahboyce/subscriptions","organizations_url":"https://api.github.com/users/sarahboyce/orgs","repos_url":"https://api.github.com/users/sarahboyce/repos","events_url":"https://api.github.com/users/sarahboyce/events{/privacy}","received_events_url":"https://api.github.com/users/sarahboyce/received_events","type":"User","user_view_type":"public","site_admin":false},"comments":7,"review_comments":5,"maintainer_can_modify":false,"commits":1,"additions":7,"deletions":3,"changed_files":1}'
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining,
+        X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes,
+        X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO,
+        X-GitHub-Request-Id, Deprecation, Sunset
+      Cache-Control:
+      - public, max-age=60, s-maxage=60
+      Content-Security-Policy:
+      - default-src 'none'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Thu, 25 Dec 2025 18:55:35 GMT
+      ETag:
+      - W/"28d01d538a84f1b40026cf85c96a31daaf261fe5d52dfb0696c598cd061da42e"
+      Last-Modified:
+      - Thu, 04 Sep 2025 14:38:59 GMT
+      Referrer-Policy:
+      - origin-when-cross-origin, strict-origin-when-cross-origin
+      Server:
+      - github.com
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      Vary:
+      - Accept,Accept-Encoding, Accept, X-Requested-With
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - deny
+      X-GitHub-Media-Type:
+      - github.v3; format=json
+      X-GitHub-Request-Id:
+      - 836F:2B8D8F:19044E9:201F29D:694D88A7
+      X-RateLimit-Limit:
+      - '60'
+      X-RateLimit-Remaining:
+      - '56'
+      X-RateLimit-Reset:
+      - '1766692499'
+      X-RateLimit-Resource:
+      - core
+      X-RateLimit-Used:
+      - '4'
+      X-XSS-Protection:
+      - '0'
+      content-length:
+      - '18073'
+      x-github-api-version-selected:
+      - '2022-11-28'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/vnd.github.v3+json
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.32.5
+    method: GET
+    uri: https://api.github.com/repos/django/django/pulls/18763/files
+  response:
+    body:
+      string: '[{"sha":"c3d0e1745f29b2f54371a7bc2bf50202cdee70da","filename":"docs/internals/contributing/writing-code/submitting-patches.txt","status":"modified","additions":7,"deletions":3,"changes":10,"blob_url":"https://github.com/django/django/blob/13707feb5bd858c0c38f7630ec3070ae558aefcc/docs%2Finternals%2Fcontributing%2Fwriting-code%2Fsubmitting-patches.txt","raw_url":"https://github.com/django/django/raw/13707feb5bd858c0c38f7630ec3070ae558aefcc/docs%2Finternals%2Fcontributing%2Fwriting-code%2Fsubmitting-patches.txt","contents_url":"https://api.github.com/repos/django/django/contents/docs%2Finternals%2Fcontributing%2Fwriting-code%2Fsubmitting-patches.txt?ref=13707feb5bd858c0c38f7630ec3070ae558aefcc","patch":"@@
+        -47,10 +47,14 @@ and time availability), claim it by following these steps:\n   any
+        activity, it''s probably safe to reassign it to yourself.\n \n * Log into
+        your account, if you haven''t already, by clicking \"GitHub Login\"\n-  or
+        \"DjangoProject Login\" in the upper left of the ticket page.\n+  or \"DjangoProject
+        Login\" in the upper left of the ticket page. Once logged\n+  in, you can
+        then click the \"Modify Ticket\" button near the bottom of the\n+  page.\n
+        \n-* Claim the ticket by clicking the \"assign to myself\" radio button under\n-  \"Action\"
+        near the bottom of the page, then click \"Submit changes.\"\n+* Claim the
+        ticket by clicking the \"assign to\" radio button in the \"Action\"\n+  section.
+        Your username will be filled in the text box by default.\n+\n+* Finally click
+        the \"Submit changes\" button at the bottom to save.\n \n .. note::\n     The
+        Django software foundation requests that anyone contributing more than"}]'
+    headers:
+      Accept-Ranges:
+      - bytes
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining,
+        X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes,
+        X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO,
+        X-GitHub-Request-Id, Deprecation, Sunset
+      Cache-Control:
+      - public, max-age=60, s-maxage=60
+      Content-Security-Policy:
+      - default-src 'none'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Thu, 25 Dec 2025 18:55:35 GMT
+      ETag:
+      - W/"d8496f77a30976d27edfa29feafe4aed394f424750c35b70dfdebcf1c8d1c3fc"
+      Last-Modified:
+      - Thu, 04 Sep 2025 14:38:59 GMT
+      Referrer-Policy:
+      - origin-when-cross-origin, strict-origin-when-cross-origin
+      Server:
+      - github.com
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      Vary:
+      - Accept,Accept-Encoding, Accept, X-Requested-With
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - deny
+      X-GitHub-Media-Type:
+      - github.v3; format=json
+      X-GitHub-Request-Id:
+      - 835E:37A95D:1A3B9C8:21568FB:694D88A7
+      X-RateLimit-Limit:
+      - '60'
+      X-RateLimit-Remaining:
+      - '55'
+      X-RateLimit-Reset:
+      - '1766692499'
+      X-RateLimit-Resource:
+      - core
+      X-RateLimit-Used:
+      - '5'
+      X-XSS-Protection:
+      - '0'
+      content-length:
+      - '1655'
+      x-github-api-version-selected:
+      - '2022-11-28'
+    status:
+      code: 200
+      message: OK
+version: 1

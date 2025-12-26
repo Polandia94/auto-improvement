@@ -1,0 +1,49 @@
+# Django Auto-Improvement Configuration (GitHub Issues variant)
+# Use this if you want to learn from Django PRs that link to GitHub issues instead of Trac
+
+project:
+  name: "Django"
+  repo: "django/django"
+
+# Use GitHub Issues instead of Trac (top-level, not nested)
+issue_tracker:
+  url: "https://github.com/django/django/issues"
+
+# PR Selection Criteria
+pr_selection:
+  criteria:
+    merged: true
+    has_linked_issue: true
+    min_files_changed: 1
+    max_files_changed: 15
+    days_back: 90
+
+  exclude_labels:
+    - "dependencies"
+    - "automated"
+
+# Learning Configuration
+learning:
+  max_attempts_per_pr: 3
+  success_threshold: 0.80
+  min_prs_before_next: 1
+  max_prs_per_session: 5
+
+# AI Agent Configuration
+agent_config:
+  code_path: "claude"  # Path to Claude Code CLI
+
+# Custom Prompts
+prompts:
+  research: |
+    Research the Django web framework. Focus on architecture, conventions, patterns, and testing.
+
+  implementation: |
+    Implement a solution for Django: {issue_description}
+
+    Context: {context}
+
+    Follow Django's conventions, add tests, maintain backwards compatibility.
+
+  # Use the intelligent default unified analysis prompt
+  analysis: null
