@@ -48,8 +48,6 @@ class AbstractAgentClient(ABC):
             prompt_parts.append(f"# Task: {pr_info.title}\n")
             prompt_parts.append(f"{pr_info.description}\n")
 
-        prompt_parts.append("\n## Context\n")
-        prompt_parts.append("Here are the relevant files from the repository:\n")
 
         prompt_parts.append("\n## Task\n")
         prompt_parts.append(
