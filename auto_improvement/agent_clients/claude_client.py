@@ -185,12 +185,11 @@ ENTRYPOINT ["claude"]
         self,
         pr_info: PRInfo,
         issue_info: IssueInfo | None,
-        context: dict[str, str],
         agent_md_path: Path | None = None,
     ) -> Solution:
         """Generate solution using Claude Code CLI."""
         # Build the prompt
-        prompt = self._build_implementation_prompt(pr_info, issue_info, context)
+        prompt = self._build_implementation_prompt(pr_info, issue_info)
 
         # Add critical instruction to prevent looking at future git history
         full_prompt = f"""{prompt}

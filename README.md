@@ -209,7 +209,7 @@ class LinearClient(AbstractIssueTrackerClient):
 ```python
 # Add new LLM provider (GPT-4, Gemini, etc.)
 class GPT4Client(AbstractAgentClient):
-    def generate_solution(self, pr_info, issue_info, context) -> Solution:
+    def generate_solution(self, pr_info, issue_info) -> Solution:
         # Use OpenAI API
         ...
 ```

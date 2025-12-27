@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 
 from auto_improvement.git_manager import GitManager
-from auto_improvement.models import FileChange, PRInfo, Solution
+from auto_improvement.models import PRInfo, Solution
 
 
 class TestGitManagerInit:
@@ -171,46 +171,6 @@ class TestGitManagerOperations:
 
         # Verify file was reset
         assert (repo_path / "README.md").read_text() == "# Test Repository\n"
-
-    def test_get_context_files(self, temp_repo: tuple[GitManager, Path]) -> None:
-        """Test getting context files for a PR."""
-        manager, repo_path = temp_repo
-
-        # Create some files
-        (repo_path / "file1.py").write_text("print('file1')")
-        (repo_path / "file2.py").write_text("print('file2')")
-
-        pr_info = PRInfo(
-            number=1,
-            title="Test PR",
-            description="Test",
-            author="user",
-            merged_at=datetime.now(UTC),
-            merge_commit_sha="abc",
-            base_commit_sha="def",
-            head_commit_sha="ghi",
-            files_changed=[
-                FileChange(
-                    filename="file1.py",
-                    status="added",
-                    additions=1,
-                    deletions=0,
-                    changes=1,
-                ),
-                FileChange(
-                    filename="file2.py",
-                    status="added",
-                    additions=1,
-                    deletions=0,
-                    changes=1,
-                ),
-            ],
-            url="https://github.com/test/repo/pull/1",
-        )
-
-        context = manager.get_context_files(pr_info)
-        assert "file1.py" in context
-        assert "file2.py" in context
 
     def test_cleanup_removes_directory(self, tmp_path: Path) -> None:
         """Test that cleanup removes the repository directory."""

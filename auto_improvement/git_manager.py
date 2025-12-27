@@ -188,18 +188,6 @@ class GitManager:
 
         self.repo.git.clean(*args)
 
-    def get_context_files(self, pr_info: PRInfo, max_files: int = 10) -> dict[str, str]:
-        """Get relevant context files for understanding the PR."""
-        context = {}
-
-        # Get changed files
-        for file_change in pr_info.files_changed[:max_files]:
-            content = self.get_file_content(file_change.filename)
-            if content:
-                context[file_change.filename] = content
-
-        return context
-
     def cleanup(self) -> None:
         """Clean up the local repository."""
         if self.local_path.exists():

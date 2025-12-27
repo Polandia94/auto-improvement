@@ -929,7 +929,6 @@ Django follows MTV (Model-Template-View) pattern.
         mock_git_manager.checkout_before_pr.return_value = "base"
         mock_git_manager.checkout_after_pr.return_value = "merge"
         mock_git_manager.clean.return_value = None
-        mock_git_manager.get_context_files.return_value = {"file.py": "# code"}
         mock_git_manager.get_pr_solution.return_value = Solution(
             files={"file.py": "# solution"},
             description="Solution",

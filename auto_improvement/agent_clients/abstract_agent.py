@@ -28,7 +28,6 @@ class AbstractAgentClient(ABC):
         self,
         pr_info: PRInfo,
         issue_info: IssueInfo | None,
-        context: dict[str, str],
         agent_md_path: Path | None = None,
     ) -> Solution: ...
 
@@ -36,7 +35,6 @@ class AbstractAgentClient(ABC):
         self,
         pr_info: PRInfo,
         issue_info: IssueInfo | None,
-        context: dict[str, str],
     ) -> str:
         """Build prompt for implementation."""
         prompt_parts = []
@@ -53,11 +51,6 @@ class AbstractAgentClient(ABC):
         prompt_parts.append("\n## Context\n")
         prompt_parts.append("Here are the relevant files from the repository:\n")
 
-        # Add context files
-        for filename, content in context.items():
-            prompt_parts.append(f"\n### {filename}\n")
-            prompt_parts.append(f"```\n{content}\n```\n")
-
         prompt_parts.append("\n## Task\n")
         prompt_parts.append(
             "Implement a solution to address the issue above. "
@@ -66,11 +59,6 @@ class AbstractAgentClient(ABC):
         )
 
         # List files that need to be modified
-        files_to_modify = [
-            f.filename for f in pr_info.files_changed if f.status in ["added", "modified"]
-        ]
-        if files_to_modify:
-            prompt_parts.append(f"\nFiles that likely need changes: {', '.join(files_to_modify)}\n")
 
         return "".join(prompt_parts)
 

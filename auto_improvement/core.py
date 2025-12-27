@@ -455,12 +455,9 @@ Please provide the complete {self.agent_client.agent_name} content that will hel
         ) as progress:
             task = progress.add_task("🤖 Generating solution with Claude...", total=None)
 
-            # Get context
-            context = self.git_manager.get_context_files(pr)
-
             # Generate solution
             solution = self.agent_client.generate_solution(
-                pr, pr.linked_issue, context, self.analyzer.agent_md_path
+                pr, pr.linked_issue, self.analyzer.agent_md_path
             )
 
             progress.update(task, completed=True)
