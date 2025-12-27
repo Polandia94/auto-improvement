@@ -15,16 +15,18 @@ A meta-learning system that improves AI coding assistants by learning from real-
 
 ### 🔧 Fully Configurable
 
+This are the current capabilities.
+
 **PR Source** (where code is hosted):
-- ✅ GitHub (implemented)
+- ✅ GitHub (tested)
 
 **Issue Tracker** (where issues are tracked):
-- ✅ GitHub Issues
-- ✅ Trac (e.g., Django, Python)
-- ✅ Jira
+- ✅ GitHub Issues (not tested)
+- ✅ Trac (e.g., Django, Python) (tested)
+- ✅ Jira (Not tested)
 
 **AI Agent** (which LLM to use):
-- ✅ Claude Code (recommended - has tool access)
+- ✅ Claude Code (Tested)
 
 ### 🤖 Intelligent Comparison & Learning
 
@@ -285,7 +287,6 @@ export JIRA_API_TOKEN=your-token
 ## Documentation
 
 - [INSTALL.md](INSTALL.md) - Installation guide
-- [ARCHITECTURE.md](ARCHITECTURE.md) - System architecture and design decisions
 
 ## Examples Directory
 
@@ -314,17 +315,6 @@ make check
 
 ## Roadmap
 
-### Near Term
-- [ ] GitLab support (PR source)
-- [ ] Linear support (issue tracker)
-- [ ] GPT-4 support (AI agent)
-
-### Future
-- [ ] Bitbucket support
-- [ ] Azure DevOps support
-- [ ] Gemini support
-- [ ] Local LLM support (Ollama, etc.)
-- [ ] Multi-agent comparison
 
 ## Contributing
 
