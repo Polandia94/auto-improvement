@@ -213,6 +213,13 @@ Implement the solution by editing the necessary files directly."""
         # Write prompt to temp file in working directory (accessible in Docker)
         prompt_file = self.working_dir / ".claude-prompt.txt"
         prompt_file.write_text(full_prompt)
+        # Copy agent MD file to workspace so Claude auto-reads it
+        workspace_agent_md = None
+        if agent_md_path and agent_md_path.exists():
+            workspace_agent_md = self.working_dir / self.agent_file
+            import shutil
+
+            shutil.copy(agent_md_path, workspace_agent_md)
 
         try:
             # Docker mode: full isolation with dangerously-skip-permissions
@@ -239,6 +246,11 @@ Implement the solution by editing the necessary files directly."""
         finally:
             # Clean up prompt file
             prompt_file.unlink(missing_ok=True)
+            # Move agent MD back to learning dir (in case it was modified)
+            if workspace_agent_md and workspace_agent_md.exists() and agent_md_path:
+                import shutil
+
+                shutil.move(workspace_agent_md, agent_md_path)
 
         if result.returncode != 0:
             raise RuntimeError(f"Claude Code failed with return code {result.returncode}")
