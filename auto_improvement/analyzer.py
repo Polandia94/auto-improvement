@@ -161,9 +161,10 @@ Update the learning files to capture what {agent_name} can learn:
 - Include coding style, naming conventions, common patterns, test approaches
 - Keep it concise
 - Only update if you learned something new
+- You can delete or summarize old content if it's no longer relevant
 
 ### skills/<skill-name>/SKILL.md
-- Create new skills for significant techniques learned
+- Create new skills for significant techniques learned if applicable
 - Use Anthropic Skills format with YAML frontmatter
 
 ### mcp_suggestions.md
@@ -178,6 +179,8 @@ Update the learning files to capture what {agent_name} can learn:
 - Skip entirely if you have no actionable developer-focused insights
 
 Focus on patterns, not just differences. Learn from what the developer did that {agent_name} missed.
+This changes should help {agent_name} improve future code generation in this project,
+so just not be focused on this single PR, but on broader learnings.
 """
 
     def _get_current_skills_summary(self) -> str:

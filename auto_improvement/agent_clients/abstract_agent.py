@@ -48,7 +48,6 @@ class AbstractAgentClient(ABC):
             prompt_parts.append(f"# Task: {pr_info.title}\n")
             prompt_parts.append(f"{pr_info.description}\n")
 
-
         prompt_parts.append("\n## Task\n")
         prompt_parts.append(
             "Implement a solution to address the issue above. "
@@ -123,14 +122,6 @@ class AbstractAgentClient(ABC):
                     break
 
         return files
-
-    @abstractmethod
-    def analyze_comparison(
-        self,
-        developer_solution: Solution,
-        agent_solution: Solution,
-        agent_md_content: str | None = None,
-    ) -> None: ...
 
     @abstractmethod
     def run_analysis(self, prompt: str, workspace_dir: Path) -> None:
