@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import difflib
 import subprocess
 from abc import ABC, abstractmethod
 from pathlib import Path
@@ -162,11 +163,20 @@ class AbstractAgentClient(ABC):
     def _create_comparation_prompt(
         self, developer_solution: Solution, agent_solution: Solution
     ) -> str:
+        """Create comparison prompt showing diffs between solutions."""
+        diff_output = self._create_solution_diff(developer_solution, agent_solution)
+
         return f"""Compare these two solutions and provide detailed analysis.
-## Developer's Solution
-{self._format_solution(developer_solution)}
-## {self.agent_name}'s Solution
-{self._format_solution(agent_solution)}
+
+## Developer's Solution Description
+{developer_solution.description}
+
+## {self.agent_name}'s Solution Description
+{agent_solution.description}
+
+## File Differences (Developer vs {self.agent_name})
+{diff_output}
+
 Analyze:
 1. What patterns or approaches did the developer use that {self.agent_name} missed?
 2. What are the key differences in implementation?
@@ -176,11 +186,40 @@ Analyze:
 Provide specific, actionable learnings.
 """
 
-    def _format_solution(self, solution: Solution) -> str:
-        """Format solution for display."""
-        parts = [f"Description: {solution.description}\n"]
+    def _create_solution_diff(
+        self, developer_solution: Solution, agent_solution: Solution, context_lines: int = 5
+    ) -> str:
+        """Create unified diff between two solutions."""
+        parts = []
 
-        for filename, content in solution.files.items():
-            parts.append(f"\n### {filename}\n```\n{content}\n```\n")
+        # Get all files from both solutions
+        all_files = set(developer_solution.files.keys()) | set(agent_solution.files.keys())
 
-        return "".join(parts)
+        for filename in sorted(all_files):
+            dev_content = developer_solution.files.get(filename, "")
+            agent_content = agent_solution.files.get(filename, "")
+
+            if dev_content == agent_content:
+                parts.append(f"\n### {filename}\n(identical in both solutions)\n")
+                continue
+
+            # Create unified diff
+            dev_lines = dev_content.splitlines(keepends=True)
+            agent_lines = agent_content.splitlines(keepends=True)
+
+            diff = difflib.unified_diff(
+                agent_lines,
+                dev_lines,
+                fromfile=f"{self.agent_name}: {filename}",
+                tofile=f"Developer: {filename}",
+                n=context_lines,
+            )
+
+            diff_text = "".join(diff)
+            if diff_text:
+                parts.append(f"\n### {filename}\n```diff\n{diff_text}```\n")
+            else:
+                # Files differ but diff is empty (e.g., whitespace only)
+                parts.append(f"\n### {filename}\n(minor differences, possibly whitespace)\n")
+
+        return "".join(parts) if parts else "(no file differences found)"
