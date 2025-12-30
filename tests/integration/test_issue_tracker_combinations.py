@@ -25,6 +25,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 import vcr  # type: ignore[import-untyped]
+from freezegun import freeze_time
 
 from auto_improvement.issues_tracker_clients.github_issues_client import GitHubIssuesClient
 from auto_improvement.issues_tracker_clients.jira_client import JiraClient
@@ -249,52 +250,37 @@ class TestJiraClientIntegration:
         assert match.group(0).upper() == "KAFKA-12345"
 
 
+def _mock_subprocess_for_docker_sdk(
+    cmd: list[str], *_args: Any, **_kwargs: Any
+) -> subprocess.CompletedProcess[str]:
+    """Mock subprocess calls for Docker-based ClaudeClient."""
+    if not cmd:
+        raise ValueError("Empty command")
+
+    if cmd[0] == "docker":
+        if "images" in cmd:
+            # Docker image check - return as if image exists
+            return subprocess.CompletedProcess(args=cmd, returncode=0, stdout="abc123\n", stderr="")
+        elif "run" in cmd:
+            # Docker run - simulate successful execution
+            return subprocess.CompletedProcess(args=cmd, returncode=0, stdout="", stderr="")
+        elif "build" in cmd:
+            # Docker build
+            return subprocess.CompletedProcess(
+                args=cmd, returncode=0, stdout="Successfully built\n", stderr=""
+            )
+        return subprocess.CompletedProcess(args=cmd, returncode=0, stdout="", stderr="")
+
+    return subprocess.CompletedProcess(args=cmd, returncode=0, stdout="", stderr="")
+
+
 class TestFullCycleWithMockedClaude:
-    """Full improvement cycle tests using existing VCR cassettes for API calls and mocked Claude Code CLI."""
+    """Full improvement cycle tests using existing VCR cassettes for API calls and mocked Claude SDK."""
 
     @pytest.fixture
     def mock_claude_responses(self) -> Generator[MagicMock, None, None]:
-        """Mock Claude Code CLI responses."""
-        with patch("subprocess.run") as mock_run:
-
-            def subprocess_side_effect(
-                cmd: list[str], *args: Any, **kwargs: Any
-            ) -> subprocess.CompletedProcess[str]:
-                if not cmd:
-                    raise ValueError("Empty command")
-
-                if cmd[0] == "claude":
-                    if "--version" in cmd:
-                        return subprocess.CompletedProcess(
-                            args=cmd,
-                            returncode=0,
-                            stdout="claude-code 1.0.0\n",
-                            stderr="",
-                        )
-                    else:
-                        return subprocess.CompletedProcess(
-                            args=cmd,
-                            returncode=0,
-                            stdout="""
-I've analyzed the issue and implemented a solution.
-
-<analysis>
-{
-    "overall_score": 0.85,
-    "strengths": ["Good API design", "Proper validation"],
-    "weaknesses": ["Missing edge case tests"],
-    "key_insights": ["Project uses specific patterns"]
-}
-</analysis>
-""",
-                            stderr="",
-                        )
-                elif cmd[0] == "git":
-                    return subprocess.CompletedProcess(args=cmd, returncode=0, stdout="", stderr="")
-
-                return subprocess.CompletedProcess(args=cmd, returncode=0, stdout="", stderr="")
-
-            mock_run.side_effect = subprocess_side_effect
+        """Mock Claude SDK Docker responses."""
+        with patch("subprocess.run", side_effect=_mock_subprocess_for_docker_sdk) as mock_run:
             yield mock_run
 
     @my_vcr.use_cassette("github_get_merged_prs.yaml")  # type: ignore[untyped-decorator]
@@ -308,7 +294,7 @@ I've analyzed the issue and implemented a solution.
 
         This test:
         1. Uses real API data from VCR cassette
-        2. Only mocks Claude Code CLI
+        2. Only mocks Claude SDK in Docker
         3. Simulates the complete workflow
         """
         from auto_improvement.agent_clients.claude_client import ClaudeClient
@@ -341,7 +327,7 @@ I've analyzed the issue and implemented a solution.
         assert pr.number > 0
         assert pr.merged_at is not None
 
-        # Step 5: Create Claude client (mocked)
+        # Step 5: Create Claude client (mocked Docker)
         claude_config = AgentConfig(code_path="claude", model="claude-sonnet-4-20250514")
         claude_client = ClaudeClient(claude_config, working_dir=temp_repo_dir)
 
@@ -350,34 +336,39 @@ I've analyzed the issue and implemented a solution.
         test_file.parent.mkdir(parents=True, exist_ok=True)
         test_file.write_text("# Original query.py content")
 
-        # Step 7: Generate solution (mocked Claude response)
-        with patch.object(
-            claude_client,
-            "_detect_changed_files",
-            return_value=["django/db/models/query.py"],
-        ):
-            solution = claude_client.generate_solution(pr, pr.linked_issue, {"context": "data"})
+        # Step 7: Generate solution (mocked SDK response)
+        with patch.object(claude_client, "_run_sdk_in_docker") as mock_sdk:
+            mock_sdk.return_value = subprocess.CompletedProcess(
+                args=["docker", "run"], returncode=0, stdout="", stderr=""
+            )
+            with patch.object(
+                claude_client,
+                "_detect_changed_files",
+                return_value=["django/db/models/query.py"],
+            ):
+                solution = claude_client.generate_solution(pr, pr.linked_issue, None)
 
-        assert solution is not None
-        assert len(solution.files) > 0
+            assert solution is not None
+            assert len(solution.files) > 0
 
-        # Step 8: Create comparison solutions
-        dev_solution = Solution(
-            files={"django/db/models/query.py": "# Developer solution"},
-            description="Developer's implementation",
-        )
+            # Step 8: Create comparison solutions
+            dev_solution = Solution(
+                files={"django/db/models/query.py": "# Developer solution"},
+                description="Developer's implementation",
+            )
 
-        # Step 9: Analyze comparison (Claude edits files directly, returns None)
-        claude_client.analyze_comparison(dev_solution, solution)
+            # Step 9: Analyze comparison (Claude edits files directly, returns None)
+            claude_client.analyze_comparison(dev_solution, solution)
 
-        # Just verify no exception was raised
+            # Just verify SDK was called
+            assert mock_sdk.called
 
     def test_mock_claude_solution_generation(
         self,
         mock_claude_responses: MagicMock,
         temp_repo_dir: Path,
     ) -> None:
-        """Test that Claude mocking works correctly for solution generation."""
+        """Test that Claude SDK mocking works correctly for solution generation."""
         from auto_improvement.agent_clients.claude_client import ClaudeClient
 
         # Create Claude client
@@ -389,8 +380,6 @@ I've analyzed the issue and implemented a solution.
         test_file.write_text("# Test content")
 
         # Create minimal PR info
-        from datetime import UTC, datetime
-
         pr_info = PRInfo(
             number=1,
             title="Test PR",
@@ -404,9 +393,13 @@ I've analyzed the issue and implemented a solution.
             url="https://github.com/test/test/pull/1",
         )
 
-        # Generate solution with mocked files
-        with patch.object(claude_client, "_detect_changed_files", return_value=["test.py"]):
-            solution = claude_client.generate_solution(pr_info, None, {})
+        # Generate solution with mocked SDK
+        with patch.object(claude_client, "_run_sdk_in_docker") as mock_sdk:
+            mock_sdk.return_value = subprocess.CompletedProcess(
+                args=["docker", "run"], returncode=0, stdout="", stderr=""
+            )
+            with patch.object(claude_client, "_detect_changed_files", return_value=["test.py"]):
+                solution = claude_client.generate_solution(pr_info, None, None)
 
         assert solution is not None
         assert "test.py" in solution.files
@@ -416,7 +409,7 @@ I've analyzed the issue and implemented a solution.
         mock_claude_responses: MagicMock,
         temp_repo_dir: Path,
     ) -> None:
-        """Test that Claude mocking works correctly for analysis."""
+        """Test that Claude SDK mocking works correctly for analysis."""
         from auto_improvement.agent_clients.claude_client import ClaudeClient
 
         claude_config = AgentConfig(code_path="claude")
@@ -431,11 +424,17 @@ I've analyzed the issue and implemented a solution.
             description="Claude solution",
         )
 
-        # analyze_comparison now returns None and edits files directly
-        claude_client.analyze_comparison(dev_solution, claude_solution)
+        # Mock _run_sdk_in_docker
+        with patch.object(claude_client, "_run_sdk_in_docker") as mock_sdk:
+            mock_sdk.return_value = subprocess.CompletedProcess(
+                args=["docker", "run"], returncode=0, stdout="", stderr=""
+            )
 
-        # Just verify Claude was called (no exception raised)
-        assert mock_claude_responses.called
+            # analyze_comparison now returns None and edits files directly
+            claude_client.analyze_comparison(dev_solution, claude_solution)
+
+            # Just verify SDK was called
+            assert mock_sdk.called
 
 
 class TestIssueTrackerClientFactory:
@@ -480,7 +479,7 @@ class TestIssueTrackerClientFactory:
 class TestCombinedWorkflow:
     """Tests demonstrating the combined workflow with different trackers."""
 
-    @my_vcr.use_cassette("github_get_merged_prs.yaml")  # type: ignore[untyped-decorator]
+    @my_vcr.use_cassette("github_get_merged_prs_workflow.yaml")  # type: ignore[untyped-decorator]
     def test_workflow_with_trac(self) -> None:
         """Test workflow: GitHub PRs + Trac issue tracker."""
         trac_config = IssueTrackerConfig(
@@ -588,10 +587,12 @@ class TestFullRunImprovementCycle:
                 capture_output=True,
                 timeout=300,
             )
+            # Try to fetch latest, but don't fail if network is unavailable
+            # The tests use VCR cassettes so fresh data isn't critical
             subprocess.run(
                 ["git", "fetch", "origin", "main"],
                 cwd=repo_dir,
-                check=True,
+                check=False,  # Don't fail on network issues
                 capture_output=True,
                 timeout=120,
             )
@@ -615,44 +616,11 @@ class TestFullRunImprovementCycle:
     @pytest.fixture
     def mock_claude_for_full_cycle(self) -> Generator[MagicMock, None, None]:
         """
-        Mock Claude Code CLI with comprehensive responses for full cycle.
+        Mock Claude SDK with comprehensive responses for full cycle.
 
-        This mock ONLY intercepts 'claude' commands. All other commands
-        (including git) are passed through to the real subprocess.run.
+        This mock intercepts Docker commands for ClaudeClient initialization
+        and lets real git commands pass through.
         """
-        # Pre-define mock responses
-        analysis_response = """I've analyzed both solutions and updated the learning files.
-
-<analysis>
-{
-    "overall_score": 0.82,
-    "strengths": [
-        "Correctly identified the core optimization opportunity",
-        "Applied appropriate Django patterns",
-        "Included basic test coverage"
-    ],
-    "weaknesses": [
-        "Missed the caching strategy from developer's solution",
-        "Did not fully optimize the filter chain building"
-    ],
-    "key_insights": [
-        "Django QuerySet optimizations often involve internal caching",
-        "Performance PRs typically include comprehensive benchmark tests",
-        "Filter chain building can be pre-computed in many cases"
-    ]
-}
-</analysis>
-
-I've updated CLAUDE.md with these learnings about Django ORM optimization patterns."""
-
-        solution_response = """I've analyzed the issue and implemented a solution.
-
-## Changes Made:
-1. Modified `django/db/models/query.py` to add optimization logic
-2. Updated filter method with improved performance
-
-The implementation follows Django's coding conventions."""
-
         claude_md_content = """# Django Project Context
 
 ## Architecture
@@ -675,51 +643,38 @@ Django follows MTV (Model-Template-View) pattern.
         # Store the original subprocess.run
         original_run = subprocess.run
 
-        def handle_claude_cmd(
-            cmd: list[str], kwargs: dict[str, Any]
-        ) -> subprocess.CompletedProcess[str]:
-            """Handle claude commands."""
-            if "--version" in cmd:
-                return subprocess.CompletedProcess(
-                    args=cmd, returncode=0, stdout="claude-code 1.0.0\n", stderr=""
-                )
-            if "--print" in cmd:
-                prompt = cmd[-1] if len(cmd) > 1 else ""
-                is_analysis = "analysis" in prompt.lower() or "compare" in prompt.lower()
-                stdout = analysis_response if is_analysis else solution_response
-                return subprocess.CompletedProcess(args=cmd, returncode=0, stdout=stdout, stderr="")
-            # Interactive mode (research phase) - write CLAUDE.md to learning directory
-            cwd = kwargs.get("cwd")
-            if cwd:
-                cwd_path = Path(cwd)
-                # Learning directory is a sibling: repo -> repo-learning
-                learning_dir = cwd_path.parent / (cwd_path.name + "-learning")
-                learning_dir.mkdir(parents=True, exist_ok=True)
-                (learning_dir / "CLAUDE.md").write_text(claude_md_content)
-            return subprocess.CompletedProcess(args=cmd, returncode=0, stdout="", stderr="")
-
         def subprocess_side_effect(
             cmd: list[str], *args: Any, **kwargs: Any
         ) -> subprocess.CompletedProcess[str]:
             if not cmd:
                 raise ValueError("Empty command")
-            # Mock docker commands for ClaudeClient initialization
+            # Mock docker commands for ClaudeClient initialization and SDK execution
             if cmd[0] == "docker":
                 if "images" in cmd:
                     # Return as if docker image exists
                     return subprocess.CompletedProcess(
                         args=cmd, returncode=0, stdout="abc123\n", stderr=""
                     )
+                elif "run" in cmd:
+                    # Check if this is a run_research call by looking for config mount
+                    # and write CLAUDE.md to the workspace
+                    for i, arg in enumerate(cmd):
+                        if arg == "-v" and i + 1 < len(cmd):
+                            vol_mount = cmd[i + 1]
+                            if "/workspace" in vol_mount and ":" in vol_mount:
+                                workspace_path = vol_mount.split(":")[0]
+                                learning_dir = Path(workspace_path)
+                                if learning_dir.exists():
+                                    (learning_dir / "CLAUDE.md").write_text(claude_md_content)
+                    return subprocess.CompletedProcess(args=cmd, returncode=0, stdout="", stderr="")
                 return subprocess.CompletedProcess(args=cmd, returncode=0, stdout="", stderr="")
-            # Mock claude commands
-            if cmd[0] == "claude":
-                return handle_claude_cmd(cmd, kwargs)
             # Let real git and other commands execute normally
             return original_run(cmd, *args, **kwargs)
 
         with patch("subprocess.run", side_effect=subprocess_side_effect) as mock_run:
             yield mock_run
 
+    @freeze_time("2025-12-29")  # Freeze time to match cassette recording date
     @my_vcr.use_cassette("full_cycle_django_prs_auto.yaml")  # type: ignore[untyped-decorator]
     def test_run_improvement_cycle_django_with_trac(
         self,
@@ -737,6 +692,7 @@ Django follows MTV (Model-Template-View) pattern.
         5. Uses real GitManager for git operations
 
         To re-record cassette: RECORD_MODE=new_episodes pytest <test>
+        Note: Uses freeze_time to ensure date-based queries match cassette.
         """
         from auto_improvement.core import AutoImprovement
         from auto_improvement.git_manager import GitManager
@@ -776,6 +732,13 @@ Django follows MTV (Model-Template-View) pattern.
 
             # Override config with our test config
             auto_improve.config = config
+
+            # Also update the clients to use Trac issue tracker
+            from auto_improvement.version_control_clients.github_client import GitHubClient
+
+            trac_client = TracClient(config.issue_tracker)
+            auto_improve.issue_tracker_client = trac_client
+            auto_improve.github_client = GitHubClient(trac_client)
 
             # Run the improvement cycle with just 1 PR for testing
             result = auto_improve.run_improvement_cycle(max_iterations=1)
@@ -859,8 +822,17 @@ Django follows MTV (Model-Template-View) pattern.
         temp_repo_dir: Path,
     ) -> None:
         """Test that the improvement cycle correctly calculates final statistics."""
+        from auto_improvement.agent_clients.claude_client import ClaudeClient
         from auto_improvement.core import AutoImprovement
         from auto_improvement.models import Config, IssueTrackerConfig, ProjectConfig
+
+        # Create test files that would be "changed" by Claude
+        (temp_repo_dir / "file.py").write_text("# solution content")
+
+        # Create learning directory with CLAUDE.md (required by research phase)
+        learning_dir = temp_repo_dir.parent / f"{temp_repo_dir.name}-learning"
+        learning_dir.mkdir(parents=True, exist_ok=True)
+        (learning_dir / "CLAUDE.md").write_text("# Django Context\n\nTest context for Django.")
 
         # Create multiple test PRs with linked issues
         test_prs = [
@@ -934,9 +906,18 @@ Django follows MTV (Model-Template-View) pattern.
             description="Solution",
         )
 
+        # Mock ClaudeClient methods to return success
+        def mock_run_sdk(*args: Any, **kwargs: Any) -> subprocess.CompletedProcess[str]:
+            return subprocess.CompletedProcess(
+                args=["docker", "run"], returncode=0, stdout="", stderr=""
+            )
+
         with (
             patch("auto_improvement.core.GitManager", return_value=mock_git_manager),
             patch.object(AutoImprovement, "_select_prs", return_value=test_prs),
+            patch.object(AutoImprovement, "_research_phase"),  # Skip research phase
+            patch.object(ClaudeClient, "_run_sdk_in_docker", side_effect=mock_run_sdk),
+            patch.object(ClaudeClient, "_detect_changed_files", return_value=["file.py"]),
         ):
             auto_improve = AutoImprovement(
                 repo_path="django/django",

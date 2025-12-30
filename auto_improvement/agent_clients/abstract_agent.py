@@ -141,6 +141,24 @@ class AbstractAgentClient(ABC):
         """
         ...
 
+    @abstractmethod
+    def run_research(self, prompt: str, workspace_dir: Path) -> None:
+        """
+        Run a research task with the given prompt in the specified workspace.
+
+        The agent should analyze the codebase and create initial context files
+        (like CLAUDE.md) in the workspace directory. This runs in Docker for isolation.
+
+        Args:
+            prompt: The research prompt to execute
+            workspace_dir: Directory to use as workspace (mounted in Docker)
+
+        Raises:
+            RuntimeError: If the research fails or times out
+
+        """
+        ...
+
     def _create_comparation_prompt(
         self, developer_solution: Solution, agent_solution: Solution
     ) -> str:

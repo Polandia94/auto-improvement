@@ -39,8 +39,11 @@ class GitManager:
         if self.local_path.exists() and (self.local_path / ".git").exists():
             logger.info(f"Repository already exists at {self.local_path}, updating...")
             self.repo = git.Repo(self.local_path)
-            # Fetch latest changes
-            self.repo.remotes.origin.fetch()
+            # Try to fetch latest changes, but don't fail if network is unavailable
+            try:
+                self.repo.remotes.origin.fetch()
+            except git.exc.GitCommandError as e:
+                logger.warning(f"Could not fetch updates (network may be unavailable): {e}")
         else:
             logger.info(f"Cloning repository to {self.local_path}...")
             self.local_path.mkdir(parents=True, exist_ok=True)

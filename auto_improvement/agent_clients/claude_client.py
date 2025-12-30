@@ -1,7 +1,8 @@
-"""Claude client supporting both Claude Code CLI and Claude API."""
+"""Claude client using the Claude Agent SDK inside Docker for isolation."""
 
 from __future__ import annotations
 
+import json
 import os
 import subprocess
 import typing
@@ -14,8 +15,94 @@ if typing.TYPE_CHECKING:
     from auto_improvement.models import AgentConfig, IssueInfo, PRInfo
 
 
+# SDK runner script that will be embedded in the Docker image
+SDK_RUNNER_SCRIPT = '''#!/usr/bin/env python3
+"""SDK runner script for executing Claude Agent SDK inside Docker."""
+
+import argparse
+import asyncio
+import json
+import os
+import sys
+
+from claude_agent_sdk import ClaudeAgentOptions, query
+from claude_agent_sdk.types import AssistantMessage, TextBlock
+
+
+async def run_query(
+    prompt: str,
+    system_prompt: str | None = None,
+    model: str | None = None,
+    allowed_tools: list[str] | None = None,
+    disallowed_tools: list[str] | None = None,
+    print_output: bool = True,
+    cwd: str = "/workspace",
+) -> str:
+    """Run a query using the Claude Agent SDK."""
+    options = ClaudeAgentOptions(
+        system_prompt=system_prompt,
+        allowed_tools=allowed_tools or ["Read", "Write", "Edit", "Bash", "Glob", "Grep"],
+        disallowed_tools=disallowed_tools,
+        permission_mode="acceptEdits",
+        cwd=cwd,
+    )
+
+    if model:
+        options.model = model
+
+    output_parts = []
+
+    async for message in query(prompt=prompt, options=options):
+        if isinstance(message, AssistantMessage):
+            for block in message.content:
+                if isinstance(block, TextBlock):
+                    if print_output:
+                        print(block.text)
+                    output_parts.append(block.text)
+
+    return "\\n".join(output_parts)
+
+
+def main() -> None:
+    """Main entry point for the SDK runner."""
+    parser = argparse.ArgumentParser(description="Run Claude Agent SDK")
+    parser.add_argument("--config", required=True, help="JSON config file path")
+    args = parser.parse_args()
+
+    # Read config from file
+    with open(args.config) as f:
+        config = json.load(f)
+
+    prompt = config.get("prompt", "")
+    system_prompt = config.get("system_prompt")
+    model = config.get("model")
+    allowed_tools = config.get("allowed_tools")
+    disallowed_tools = config.get("disallowed_tools")
+    print_output = config.get("print_output", True)
+    cwd = config.get("cwd", "/workspace")
+
+    try:
+        asyncio.run(run_query(
+            prompt=prompt,
+            system_prompt=system_prompt,
+            model=model,
+            allowed_tools=allowed_tools,
+            disallowed_tools=disallowed_tools,
+            print_output=print_output,
+            cwd=cwd,
+        ))
+    except Exception as e:
+        print(f"Error running SDK: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
+'''
+
+
 class ClaudeClient(AbstractAgentClient):
-    """Client for interacting with Claude code"""
+    """Client for interacting with Claude using the Agent SDK inside Docker."""
 
     def __init__(self, config: AgentConfig, working_dir: Path | None = None):
         self.config = config
@@ -26,7 +113,6 @@ class ClaudeClient(AbstractAgentClient):
 
         self._ensure_docker_image()
         self._ensure_docker_auth()
-        self._verify_claude_code()
 
     def _ensure_docker_image(self) -> None:
         """Ensure the Docker sandbox image exists, build if needed."""
@@ -67,36 +153,52 @@ class ClaudeClient(AbstractAgentClient):
         print(f"Docker image '{self.config.docker_image}' built successfully.")
 
     def _get_dockerfile_content(self) -> str:
-        """Get Dockerfile content from package resources."""
-        return """# Docker image for running Claude Code in isolation
-FROM node:20-slim
+        """Get Dockerfile content with Python, uv, and Claude Agent SDK."""
+        return f"""# Docker image for running Claude Agent SDK in isolation
+FROM python:3.12-slim
 
-# Install dependencies
+# Install system dependencies
 RUN apt-get update && apt-get install -y \\
     git \\
-    python3 \\
-    python3-pip \\
-    python3-venv \\
     make \\
     curl \\
+    nodejs \\
+    npm \\
     && rm -rf /var/lib/apt/lists/*
 
 # Install Claude Code CLI
 RUN npm install -g @anthropic-ai/claude-code
 
-# Create non-root user (required for --dangerously-skip-permissions)
+# Install uv for fast Python package management
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+ENV PATH="/root/.local/bin:$PATH"
+
+# Install claude-agent-sdk as root (before creating non-root user)
+RUN uv pip install --system claude-agent-sdk anyio
+
+# Create non-root user
 RUN useradd -m -s /bin/bash claude && \\
-    mkdir -p /workspace && \\
-    chown -R claude:claude /workspace
+    mkdir -p /workspace /app && \\
+    chown -R claude:claude /workspace /app
 
 # Switch to non-root user
 USER claude
+ENV PATH="/home/claude/.local/bin:$PATH"
 
-# Create workspace directory
+WORKDIR /app
+
+# Create the SDK runner script
+COPY --chown=claude:claude <<'RUNNER_EOF' /app/sdk_runner.py
+{SDK_RUNNER_SCRIPT}
+RUNNER_EOF
+
+RUN chmod +x /app/sdk_runner.py
+
+# Set workspace as default working directory
 WORKDIR /workspace
 
 # Default command
-ENTRYPOINT ["claude"]
+ENTRYPOINT ["python", "/app/sdk_runner.py"]
 """
 
     def _get_claude_config_dir(self) -> Path:
@@ -126,6 +228,24 @@ ENTRYPOINT ["claude"]
                 "-v",
                 f"{claude_config}:/home/claude/.claude",
                 self.config.docker_image,
+                "--help",  # Override entrypoint temporarily
+            ],
+            timeout=10,
+            check=False,
+        )
+
+        # Now run the actual setup-token with claude CLI
+        result = subprocess.run(
+            [
+                "docker",
+                "run",
+                "-it",
+                "--rm",
+                "--entrypoint",
+                "claude",
+                "-v",
+                f"{claude_config}:/home/claude/.claude",
+                self.config.docker_image,
                 "setup-token",
             ],
             timeout=300,  # 5 minutes for auth
@@ -135,14 +255,19 @@ ENTRYPOINT ["claude"]
         if result.returncode != 0:
             raise RuntimeError(
                 "Failed to authenticate Claude Code. Please run:\n"
-                f"docker run -it --rm -v {claude_config}:/home/claude/.claude "
+                f"docker run -it --rm --entrypoint claude "
+                f"-v {claude_config}:/home/claude/.claude "
                 f"{self.config.docker_image} setup-token"
             )
 
         print("Claude Code authenticated successfully.")
 
-    def _build_docker_cmd(self, claude_args: list[str], workspace_dir: Path) -> list[str]:
-        """Build Docker command to run Claude in isolation."""
+    def _build_docker_cmd(
+        self,
+        config_file: Path,
+        workspace_dir: Path,
+    ) -> list[str]:
+        """Build Docker command to run the SDK runner in isolation."""
         claude_config = self._get_claude_config_dir()
         return [
             "docker",
@@ -152,33 +277,53 @@ ENTRYPOINT ["claude"]
             f"{workspace_dir}:/workspace",
             "-v",
             f"{claude_config}:/home/claude/.claude",  # Persistent auth
+            "-v",
+            f"{config_file}:/app/config.json:ro",  # Mount config file
             "-w",
             "/workspace",
             "-e",
             f"ANTHROPIC_API_KEY={os.environ.get('ANTHROPIC_API_KEY', '')}",
             self.config.docker_image,
-            *claude_args,
+            "--config",
+            "/app/config.json",
         ]
 
-    def _verify_claude_code(self) -> None:
-        """Verify Claude Code CLI is available."""
+    def _run_sdk_in_docker(
+        self,
+        prompt: str,
+        workspace_dir: Path,
+        system_prompt: str | None = None,
+        disallowed_tools: list[str] | None = None,
+    ) -> subprocess.CompletedProcess[str]:
+        """Run the SDK inside Docker with the given configuration."""
+        # Build SDK config
+        sdk_config = {
+            "prompt": prompt,
+            "system_prompt": system_prompt,
+            "model": self.config.model,
+            "disallowed_tools": disallowed_tools,
+            "print_output": True,
+            "cwd": "/workspace",
+        }
+
+        # Write config to temp file in workspace (accessible in Docker)
+        config_file = workspace_dir / ".sdk-config.json"
+        config_file.write_text(json.dumps(sdk_config, indent=2))
+
         try:
+            cmd = self._build_docker_cmd(config_file, workspace_dir)
+
             result = subprocess.run(
-                [self.config.code_path, "--version"],
-                capture_output=True,
+                cmd,
                 text=True,
-                timeout=5,
+                timeout=3000,  # 50 minute timeout
                 check=False,
             )
-            if result.returncode != 0:
-                raise RuntimeError(f"Claude Code CLI not working: {result.stderr}")
-        except FileNotFoundError as err:
-            raise RuntimeError(
-                f"Claude Code CLI not found at '{self.config.code_path}'. "
-                "Install it from: https://github.com/anthropics/claude-code"
-            ) from err
-        except subprocess.TimeoutExpired as err:
-            raise RuntimeError("Claude Code CLI timed out") from err
+
+            return result
+        finally:
+            # Clean up config file
+            config_file.unlink(missing_ok=True)
 
     @typing.override
     def generate_solution(
@@ -187,12 +332,12 @@ ENTRYPOINT ["claude"]
         issue_info: IssueInfo | None,
         agent_md_path: Path | None = None,
     ) -> Solution:
-        """Generate solution using Claude Code CLI."""
+        """Generate solution using Claude Agent SDK in Docker."""
         # Build the prompt
         prompt = self._build_implementation_prompt(pr_info, issue_info)
 
         # Add critical instruction to prevent looking at future git history
-        full_prompt = f"""{prompt}
+        system_prompt = f"""{prompt}
 
 CRITICAL RULES:
 1. DO NOT use git log, git show, git diff, or any git commands that reveal commit history
@@ -202,16 +347,6 @@ CRITICAL RULES:
 
 Implement the solution by editing the necessary files directly."""
 
-        # Build command - either Docker or local
-        extra_args = [
-            "--disallowedTools",
-            "Bash(git log:*)",
-            "Bash(git show:*)",
-        ]
-
-        # Write prompt to temp file in working directory (accessible in Docker)
-        prompt_file = self.working_dir / ".claude-prompt.txt"
-        prompt_file.write_text(full_prompt)
         # Copy agent MD file to workspace so Claude auto-reads it
         workspace_agent_md = None
         if agent_md_path and agent_md_path.exists():
@@ -221,30 +356,14 @@ Implement the solution by editing the necessary files directly."""
             shutil.copy(agent_md_path, workspace_agent_md)
 
         try:
-            # Docker mode: full isolation with dangerously-skip-permissions
-            claude_args = [
-                self.config.code_path,
-                "--print",
-                "--dangerously-skip-permissions",
-                "--system-prompt-file",
-                "/workspace/.claude-prompt.txt",
-                "Execute the task described in the system prompt.",
-            ]
-            if self.config.model:
-                claude_args.extend(["--model", self.config.model])
-            claude_args.extend(extra_args)
-            cmd = self._build_docker_cmd(claude_args, self.working_dir)
-
-            # Run Claude Code in Docker - exits automatically after completion
-            result = subprocess.run(
-                cmd,
-                text=True,
-                timeout=3000,  # 50 minute timeout
-                check=False,
+            # Run SDK in Docker with disallowed git history tools
+            result = self._run_sdk_in_docker(
+                prompt="Execute the task described in the system prompt.",
+                workspace_dir=self.working_dir,
+                system_prompt=system_prompt,
+                disallowed_tools=["Bash(git log:*)", "Bash(git show:*)"],
             )
         finally:
-            # Clean up prompt file
-            prompt_file.unlink(missing_ok=True)
             # Move agent MD back to learning dir (in case it was modified)
             if workspace_agent_md and workspace_agent_md.exists() and agent_md_path:
                 import shutil
@@ -252,7 +371,7 @@ Implement the solution by editing the necessary files directly."""
                 shutil.move(workspace_agent_md, agent_md_path)
 
         if result.returncode != 0:
-            raise RuntimeError(f"Claude Code failed with return code {result.returncode}")
+            raise RuntimeError(f"Claude SDK failed with return code {result.returncode}")
 
         # Detect files that Claude modified in the working directory
         changed_files = self._detect_changed_files()
@@ -265,38 +384,17 @@ Implement the solution by editing the necessary files directly."""
 
         return Solution(
             files=files,
-            description=f"Solution generated by Claude Code for PR #{pr_info.number}",
+            description=f"Solution generated by Claude SDK for PR #{pr_info.number}",
         )
 
     @typing.override
     def run_analysis(self, prompt: str, workspace_dir: Path) -> None:
-        """Run analysis with a prompt in Docker for isolation."""
-        # Write prompt to temp file in workspace directory (accessible in Docker)
-        prompt_file = workspace_dir / ".claude-prompt.txt"
-        prompt_file.write_text(prompt)
-
+        """Run analysis with Claude SDK in Docker for isolation."""
         try:
-            # Build Claude command - runs in Docker for isolation
-            claude_args = [
-                self.config.code_path,
-                "--print",  # Print response and exit automatically
-                "--dangerously-skip-permissions",  # Safe because running in Docker
-                "--system-prompt-file",
-                "/workspace/.claude-prompt.txt",
-                "Execute the analysis described in the system prompt.",
-            ]
-
-            if self.config.model:
-                claude_args.extend(["--model", self.config.model])
-
-            # Wrap in Docker for isolation
-            cmd = self._build_docker_cmd(claude_args, workspace_dir)
-
-            result = subprocess.run(
-                cmd,
-                text=True,
-                timeout=3000,  # 50 minute timeout
-                check=False,
+            result = self._run_sdk_in_docker(
+                prompt="Execute the analysis described in the system prompt.",
+                workspace_dir=workspace_dir,
+                system_prompt=prompt,
             )
 
             if result.returncode != 0:
@@ -310,6 +408,26 @@ Implement the solution by editing the necessary files directly."""
             raise
         except Exception as err:
             raise RuntimeError(f"Failed to run {self.agent_name}: {err}") from err
-        finally:
-            # Clean up prompt file
-            prompt_file.unlink(missing_ok=True)
+
+    @typing.override
+    def run_research(self, prompt: str, workspace_dir: Path) -> None:
+        """Run research phase with Claude SDK in Docker."""
+        result = self._run_sdk_in_docker(
+            prompt=prompt,
+            workspace_dir=workspace_dir,
+            system_prompt=None,  # Prompt is self-contained for research
+        )
+
+        if result.returncode != 0:
+            raise RuntimeError(
+                f"{self.agent_name} research session failed with return code {result.returncode}"
+            )
+
+    def analyze_comparison(
+        self,
+        developer_solution: Solution,
+        claude_solution: Solution,
+    ) -> None:
+        """Analyze and compare two solutions, updating learning files directly."""
+        prompt = self._create_comparation_prompt(developer_solution, claude_solution)
+        self.run_analysis(prompt, self.working_dir)

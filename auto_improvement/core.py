@@ -245,45 +245,19 @@ Please provide the complete {self.agent_client.agent_name} content that will hel
         return prompt
 
     def _perform_research(self, prompt: str) -> None:
-        """Use Agent to perform research and create initial file"""
-        import subprocess
-
+        """Use Agent SDK to perform research and create initial file."""
         # Access config dynamically
         agent_client = self.agent_client
         if not agent_client:
             raise RuntimeError("Agent client not properly configured")
 
-        code_path = agent_client.code_path
-        model = getattr(agent_client, "model", None)
-
-        # Run Claude Code in interactive mode so user can see and approve actions
-        cmd = [
-            code_path,
-        ]
-
-        if model:
-            cmd.extend(["--model", model])
-
-        # Add prompt as the last argument
-        cmd.append(prompt)
-
         self.console.print("\n[bold cyan]Starting Claude research session...[/bold cyan]")
         self.console.print(
-            "[dim]You will see Claude's output and can approve/reject actions.[/dim]\n"
+            "[dim]Claude SDK is running in Docker with auto-approval enabled.[/dim]\n"
         )
 
-        # Run in interactive mode - output goes directly to terminal
-        # Use cwd parameter to set working directory
-        result = subprocess.run(
-            cmd,
-            cwd=str(self.git_manager.local_path),
-            timeout=3000,  # 50 minute timeout for research
-            check=False,
-        )
-
-        if result.returncode != 0:
-            print(result)
-            raise RuntimeError("Claude research session failed or was cancelled")
+        # Use the agent client's run_research method which uses the SDK in Docker
+        agent_client.run_research(prompt, self.learning_dir)
 
         # After interactive session, verify the CLAUDE.md file was created
         if not self.analyzer.agent_md_path.exists():
@@ -344,32 +318,7 @@ Please provide the complete {self.agent_client.agent_name} content that will hel
                 self.console.print(f"[dim]Skipping {len(analyzed_prs)} already analyzed PRs[/dim]")
 
             # Fetch more PRs than needed to account for skipping analyzed ones
-            fetch_limit = limit + len(analyzed_prs) + 10
-            prs = self.github_client.get_merged_prs(
-                self.repo_path,
-                self.config.pr_selection,
-                limit=fetch_limit,
-            )
-
-            # Enrich with issue information, skipping already analyzed PRs
-            enriched_prs = []
-            for pr in prs:
-                # Skip already analyzed PRs
-                if pr.number in analyzed_prs:
-                    print(f"Skipping PR #{pr.number}: already analyzed")
-                    continue
-
-                print(f"Processing PR #{pr.number}: {pr.title}")
-                if pr.linked_issue:
-                    enriched_prs.append(pr)
-                else:
-                    # Try to fetch from issue tracker
-                    print("  No linked issue, trying to extract from PR description...")
-                    print(self.issue_tracker_client)
-                    issue_info = self._extract_issue_id_from_pr(pr)
-                    if issue_info:
-                        pr.linked_issue = issue_info
-                        enriched_prs.append(pr)
+            enriched_prs = self.search_prs(limit, analyzed_prs)
 
             # Shuffle and take limit
             random.shuffle(enriched_prs)
@@ -378,6 +327,35 @@ Please provide the complete {self.agent_client.agent_name} content that will hel
             progress.update(task, completed=True)
 
         return selected
+
+    def search_prs(self, limit: int, analyzed_prs: set[int], offset: int = 0) -> list[PRInfo]:
+        fetch_limit = limit + len(analyzed_prs) + 10 + offset
+        prs = self.github_client.get_merged_prs(
+            self.repo_path,
+            self.config.pr_selection,
+            limit=fetch_limit,
+        )
+
+        # Enrich with issue information, skipping already analyzed PRs
+        enriched_prs = []
+        for pr in prs:
+            # Skip already analyzed PRs
+            if pr.number in analyzed_prs:
+                print(f"Skipping PR #{pr.number}: already analyzed")
+                continue
+
+            print(f"Processing PR #{pr.number}: {pr.title}")
+            if pr.linked_issue:
+                enriched_prs.append(pr)
+            else:
+                # Try to fetch from issue tracker
+                print("  No linked issue, trying to extract from PR description...")
+                print(self.issue_tracker_client)
+                issue_info = self._extract_issue_id_from_pr(pr)
+                if issue_info:
+                    pr.linked_issue = issue_info
+                    enriched_prs.append(pr)
+        return enriched_prs
 
     def _extract_issue_id_from_pr(self, pr: PRInfo) -> IssueInfo | None:
         """Extract issue ID from PR title and description and fetch issue info."""
