@@ -81,7 +81,11 @@ class UnifiedAnalyzer:
         # Read current state of files for context
         current_agent_md = self.agent_md_path.read_text() if self.agent_md_path.exists() else ""
         current_skills = self._get_current_skills_summary()
-        current_mcp = self.mcp_suggestions_path.read_text()
+        current_mcp = (
+            self.mcp_suggestions_path.read_text()
+            if self.mcp_suggestions_path.exists()
+            else "(No MCP suggestions yet)"
+        )
 
         # Format solutions for comparison
         dev_solution_text = self._format_solution(developer_solution, "Developer")

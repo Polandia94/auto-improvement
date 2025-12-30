@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import shutil
 import subprocess
 import typing
 from pathlib import Path
@@ -13,6 +14,13 @@ from auto_improvement.models import Solution
 
 if typing.TYPE_CHECKING:
     from auto_improvement.models import AgentConfig, IssueInfo, PRInfo
+
+# Timeout constants (in seconds)
+DOCKER_IMAGE_CHECK_TIMEOUT = 10
+DOCKER_BUILD_TIMEOUT = 600  # 10 minutes
+DOCKER_AUTH_TIMEOUT = 300  # 5 minutes
+SDK_RUN_TIMEOUT = 3000  # 50 minutes
+GIT_STATUS_TIMEOUT = 5
 
 
 # SDK runner script that will be embedded in the Docker image
@@ -121,7 +129,7 @@ class ClaudeClient(AbstractAgentClient):
             ["docker", "images", "-q", self.config.docker_image],
             capture_output=True,
             text=True,
-            timeout=10,
+            timeout=DOCKER_IMAGE_CHECK_TIMEOUT,
             check=False,
         )
 
@@ -140,7 +148,7 @@ class ClaudeClient(AbstractAgentClient):
             input=dockerfile_content,
             capture_output=True,
             text=True,
-            timeout=600,  # 10 minutes for build
+            timeout=DOCKER_BUILD_TIMEOUT,
             check=False,
         )
 
@@ -230,7 +238,7 @@ ENTRYPOINT ["python", "/app/sdk_runner.py"]
                 self.config.docker_image,
                 "--help",  # Override entrypoint temporarily
             ],
-            timeout=10,
+            timeout=DOCKER_IMAGE_CHECK_TIMEOUT,
             check=False,
         )
 
@@ -248,7 +256,7 @@ ENTRYPOINT ["python", "/app/sdk_runner.py"]
                 self.config.docker_image,
                 "setup-token",
             ],
-            timeout=300,  # 5 minutes for auth
+            timeout=DOCKER_AUTH_TIMEOUT,
             check=False,
         )
 
@@ -288,6 +296,58 @@ ENTRYPOINT ["python", "/app/sdk_runner.py"]
             "/app/config.json",
         ]
 
+    def _build_implementation_prompt(
+        self,
+        pr_info: PRInfo,
+        issue_info: IssueInfo | None,
+    ) -> str:
+        """Build prompt for implementation."""
+        prompt_parts = []
+
+        # Add issue information
+        if issue_info:
+            prompt_parts.append(f"# Issue: {issue_info.title}\n")
+            prompt_parts.append(f"{issue_info.description}\n")
+            prompt_parts.append(f"Issue URL: {issue_info.url}\n")
+        else:
+            prompt_parts.append(f"# Task: {pr_info.title}\n")
+            prompt_parts.append(f"{pr_info.description}\n")
+
+        prompt_parts.append("\n## Task\n")
+        prompt_parts.append(
+            "Implement a solution to address the issue above. "
+            "Follow the project's existing patterns and conventions. "
+            "Make the minimum necessary changes to fix the issue.\n"
+        )
+
+        return "".join(prompt_parts)
+
+    def _detect_changed_files(self) -> list[str]:
+        """Detect files that have been changed in the working directory."""
+        try:
+            result = subprocess.run(
+                ["git", "status", "--porcelain"],
+                capture_output=True,
+                text=True,
+                cwd=str(self.working_dir),
+                timeout=GIT_STATUS_TIMEOUT,
+                check=False,
+            )
+
+            if result.returncode == 0:
+                changed_files = []
+                for line in result.stdout.split("\n"):
+                    if line.strip():
+                        # Parse git status format: "XY filename"
+                        parts = line.strip().split(maxsplit=1)
+                        if len(parts) == 2:
+                            changed_files.append(parts[1])
+                return changed_files
+        except Exception:
+            pass
+
+        return []
+
     def _run_sdk_in_docker(
         self,
         prompt: str,
@@ -316,7 +376,7 @@ ENTRYPOINT ["python", "/app/sdk_runner.py"]
             result = subprocess.run(
                 cmd,
                 text=True,
-                timeout=3000,  # 50 minute timeout
+                timeout=SDK_RUN_TIMEOUT,
                 check=False,
             )
 
@@ -351,8 +411,6 @@ Implement the solution by editing the necessary files directly."""
         workspace_agent_md = None
         if agent_md_path and agent_md_path.exists():
             workspace_agent_md = self.working_dir / self.agent_file
-            import shutil
-
             shutil.copy(agent_md_path, workspace_agent_md)
 
         try:
@@ -366,8 +424,6 @@ Implement the solution by editing the necessary files directly."""
         finally:
             # Move agent MD back to learning dir (in case it was modified)
             if workspace_agent_md and workspace_agent_md.exists() and agent_md_path:
-                import shutil
-
                 shutil.move(workspace_agent_md, agent_md_path)
 
         if result.returncode != 0:
@@ -422,12 +478,3 @@ Implement the solution by editing the necessary files directly."""
             raise RuntimeError(
                 f"{self.agent_name} research session failed with return code {result.returncode}"
             )
-
-    def analyze_comparison(
-        self,
-        developer_solution: Solution,
-        claude_solution: Solution,
-    ) -> None:
-        """Analyze and compare two solutions, updating learning files directly."""
-        prompt = self._create_comparation_prompt(developer_solution, claude_solution)
-        self.run_analysis(prompt, self.working_dir)

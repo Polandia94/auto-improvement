@@ -24,6 +24,16 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
+def _validate_repo_format(repo: str) -> tuple[str, str]:
+    """Validate repo format and return owner and repo name."""
+    if "/" not in repo or repo.count("/") != 1:
+        raise ValueError(f"Invalid repo format '{repo}'. Expected 'owner/repo' format.")
+    owner, repo_name = repo.split("/")
+    if not owner or not repo_name:
+        raise ValueError(f"Invalid repo format '{repo}'. Both owner and repo name must be non-empty.")
+    return owner, repo_name
+
+
 class GitHubClient(AbstractVersionControlClient):
     """Client for interacting with GitHub API."""
 
@@ -74,7 +84,7 @@ class GitHubClient(AbstractVersionControlClient):
         page = 1
 
         while len(all_prs) < limit:
-            print(f"Fetching merged PRs page {page}...")
+            logger.info(f"Fetching merged PRs page {page}...")
             params_with_page: dict[str, str | int] = {**params, "page": page}
             try:
                 response = self.session.get(url, params=params_with_page, timeout=30)
@@ -101,7 +111,7 @@ class GitHubClient(AbstractVersionControlClient):
 
                 # Apply additional criteria
                 if not self._matches_criteria(pr_info, criteria):
-                    print(f"  PR #{pr_number} does not match criteria, skipping...")
+                    logger.debug(f"PR #{pr_number} does not match criteria, skipping...")
                     continue
 
                 all_prs.append(pr_info)
@@ -116,7 +126,7 @@ class GitHubClient(AbstractVersionControlClient):
     @override
     def get_pr(self, repo: str, pr_number: int) -> PRInfo:
         """Fetch a specific PR."""
-        owner, repo_name = repo.split("/")
+        owner, repo_name = _validate_repo_format(repo)
         url = f"{self.base_url}/repos/{owner}/{repo_name}/pulls/{pr_number}"
 
         response = self.session.get(url, timeout=30)
@@ -183,33 +193,33 @@ class GitHubClient(AbstractVersionControlClient):
         """Check if PR matches selection criteria."""
         # Check linked issue
         if criteria.has_linked_issue and not pr_info.linked_issue:
-            print(f"PR #{pr_info.number}: no linked issue found")
+            logger.debug(f"PR #{pr_info.number}: no linked issue found")
             return False
 
         # Check files changed
         num_files = len(pr_info.files_changed)
         if num_files < criteria.min_files_changed or num_files > criteria.max_files_changed:
-            print(f"PR #{pr_info.number}: file count {num_files} out of range")
+            logger.debug(f"PR #{pr_info.number}: file count {num_files} out of range")
             return False
 
         # Check labels
         pr_labels = set(pr_info.labels)
 
         if criteria.exclude_labels and any(label in pr_labels for label in criteria.exclude_labels):
-            print(f"PR #{pr_info.number}: excluded label found")
+            logger.debug(f"PR #{pr_info.number}: excluded label found")
             return False
 
         if criteria.include_labels and not any(
             label in pr_labels for label in criteria.include_labels
         ):
-            print(f"PR #{pr_info.number}: required label not found")
+            logger.debug(f"PR #{pr_info.number}: required label not found")
             return False
 
         return True
 
     def get_repo_info(self, repo: str) -> dict[str, Any]:
         """Fetch repository information."""
-        owner, repo_name = repo.split("/")
+        owner, repo_name = _validate_repo_format(repo)
         url = f"{self.base_url}/repos/{owner}/{repo_name}"
 
         response = self.session.get(url, timeout=30)
@@ -220,7 +230,7 @@ class GitHubClient(AbstractVersionControlClient):
     @override
     def get_readme(self, repo: str) -> str | None:
         """Fetch repository README."""
-        owner, repo_name = repo.split("/")
+        owner, repo_name = _validate_repo_format(repo)
         url = f"{self.base_url}/repos/{owner}/{repo_name}/readme"
 
         try:

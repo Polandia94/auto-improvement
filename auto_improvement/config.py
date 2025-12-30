@@ -1,10 +1,13 @@
 """Configuration management."""
 
+import logging
 from pathlib import Path
 
 import yaml
 
 from auto_improvement.models import Config
+
+logger = logging.getLogger(__name__)
 
 
 def save_config(config: Config, config_path: Path) -> None:
@@ -23,8 +26,8 @@ def save_config(config: Config, config_path: Path) -> None:
 
             if isinstance(obj, type | types.GenericAlias):
                 return f"{obj.__module__}.{obj.__qualname__}"
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug(f"Could not serialize type object: {e}")
         return obj
 
     # Exclude client class objects from model_dump so Pydantic does not attempt
@@ -47,7 +50,8 @@ def save_config(config: Config, config_path: Path) -> None:
             if isinstance(o, type):
                 return f"{o.__module__}.{o.__qualname__}"
             return str(o)
-        except Exception:
+        except Exception as e:
+            logger.debug(f"JSON serialization fallback for {type(o)}: {e}")
             return str(type(o))
 
     json_text = json.dumps(data, default=_json_default)

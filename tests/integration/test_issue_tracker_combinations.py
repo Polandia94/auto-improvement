@@ -351,16 +351,7 @@ class TestFullCycleWithMockedClaude:
             assert solution is not None
             assert len(solution.files) > 0
 
-            # Step 8: Create comparison solutions
-            dev_solution = Solution(
-                files={"django/db/models/query.py": "# Developer solution"},
-                description="Developer's implementation",
-            )
-
-            # Step 9: Analyze comparison (Claude edits files directly, returns None)
-            claude_client.analyze_comparison(dev_solution, solution)
-
-            # Just verify SDK was called
+            # Verify SDK was called for solution generation
             assert mock_sdk.called
 
     def test_mock_claude_solution_generation(
@@ -403,38 +394,6 @@ class TestFullCycleWithMockedClaude:
 
         assert solution is not None
         assert "test.py" in solution.files
-
-    def test_mock_claude_analysis(
-        self,
-        mock_claude_responses: MagicMock,
-        temp_repo_dir: Path,
-    ) -> None:
-        """Test that Claude SDK mocking works correctly for analysis."""
-        from auto_improvement.agent_clients.claude_client import ClaudeClient
-
-        claude_config = AgentConfig(code_path="claude")
-        claude_client = ClaudeClient(claude_config, working_dir=temp_repo_dir)
-
-        dev_solution = Solution(
-            files={"test.py": "# Developer code"},
-            description="Developer solution",
-        )
-        claude_solution = Solution(
-            files={"test.py": "# Claude code"},
-            description="Claude solution",
-        )
-
-        # Mock _run_sdk_in_docker
-        with patch.object(claude_client, "_run_sdk_in_docker") as mock_sdk:
-            mock_sdk.return_value = subprocess.CompletedProcess(
-                args=["docker", "run"], returncode=0, stdout="", stderr=""
-            )
-
-            # analyze_comparison now returns None and edits files directly
-            claude_client.analyze_comparison(dev_solution, claude_solution)
-
-            # Just verify SDK was called
-            assert mock_sdk.called
 
 
 class TestIssueTrackerClientFactory:

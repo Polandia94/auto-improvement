@@ -217,30 +217,6 @@ class TestClaudeClientMocked:
                 assert solution is not None
                 assert "query.py" in str(solution.files) or solution.description
 
-    def test_analyze_comparison(
-        self,
-        claude_client: ClaudeClient,
-        sample_developer_solution: Solution,
-        sample_claude_solution: Solution,
-    ) -> None:
-        """Test solution comparison analysis with mocked SDK."""
-        with patch.object(claude_client, "_run_sdk_in_docker") as mock_sdk:
-            mock_sdk.return_value = subprocess.CompletedProcess(
-                args=["docker", "run"],
-                returncode=0,
-                stdout="",
-                stderr="",
-            )
-
-            # analyze_comparison now returns None and edits files directly
-            claude_client.analyze_comparison(
-                sample_developer_solution,
-                sample_claude_solution,
-            )
-
-            # Just verify it was called (no exception raised)
-            assert mock_sdk.called
-
 
 class TestFullIntegrationCycle:
     """Integration tests for the complete improvement cycle."""
@@ -436,36 +412,6 @@ class TestClaudeCodeMocking:
                 with pytest.raises(RuntimeError, match="Claude SDK failed"):
                     client.generate_solution(pr_info, None, None)
 
-    def test_mock_analysis_with_structured_response(self, temp_repo_dir: Path) -> None:
-        """Test Claude analysis runs and edits files directly."""
-        with patch("subprocess.run", side_effect=_mock_subprocess_for_docker):
-            config = AgentConfig(code_path="claude")
-            client = ClaudeClient(config, working_dir=temp_repo_dir)
-
-            dev_solution = Solution(
-                files={"test.py": "# Developer code"},
-                description="Developer solution",
-            )
-            claude_solution = Solution(
-                files={"test.py": "# Claude code"},
-                description="Claude solution",
-            )
-
-            # Mock _run_sdk_in_docker
-            with patch.object(client, "_run_sdk_in_docker") as mock_sdk:
-                mock_sdk.return_value = subprocess.CompletedProcess(
-                    args=["docker", "run"],
-                    returncode=0,
-                    stdout="",
-                    stderr="",
-                )
-
-                # analyze_comparison now returns None and edits files directly
-                client.analyze_comparison(dev_solution, claude_solution)
-
-                # Verify SDK was called
-                assert mock_sdk.called
-
 
 class TestEndToEndWithMocks:
     """End-to-end tests using both VCR and subprocess mocks."""
@@ -562,12 +508,6 @@ class TestEndToEndWithMocks:
                 with patch.object(client, "_detect_changed_files", return_value=["query.py"]):
                     claude_solution = client.generate_solution(pr, pr.linked_issue, None)
 
-                # Step 3: Analyze comparison (Claude edits files directly)
-                # analyze_comparison now returns None and edits files directly
-                client.analyze_comparison(
-                    sample_developer_solution,
-                    claude_solution,
-                )
-
-                # Just verify SDK was called
+                # Verify SDK was called and solution was generated
                 assert mock_sdk.called
+                assert claude_solution is not None

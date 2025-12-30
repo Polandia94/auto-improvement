@@ -85,7 +85,7 @@ class TracClient(AbstractIssueTrackerClient):
     def extract_issue_id_from_pr(self, pr_body: str) -> IssueInfo | None:
         """Extract Trac issue ID from PR body and fetch issue details."""
         if not pr_body:
-            print("No PR body provided.")
+            logger.debug("No PR body provided.")
             return None
 
         # Look for patterns like "Fixed #12345", "Refs #12345", "ticket #12345" or Trac URLs

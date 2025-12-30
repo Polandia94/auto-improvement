@@ -24,6 +24,15 @@ app = typer.Typer(
 console = Console()
 
 
+def _validate_repo_format(repo: str) -> None:
+    """Validate that repo is in 'owner/repo' format."""
+    if "/" not in repo or repo.count("/") != 1:
+        raise ValueError(f"Invalid repo format '{repo}'. Expected 'owner/repo' format.")
+    owner, name = repo.split("/")
+    if not owner or not name:
+        raise ValueError(f"Invalid repo format '{repo}'. Both owner and repo name must be non-empty.")
+
+
 @app.command()
 def run(
     repo: Annotated[str, typer.Option("--repo", "-r", help="GitHub repository (owner/repo)")],
@@ -39,6 +48,7 @@ def run(
 ) -> None:
     """Run auto-improvement cycle on a repository."""
     try:
+        _validate_repo_format(repo)
         # Create improver
         improver = AutoImprovement(
             repo_path=repo,
@@ -75,6 +85,7 @@ def run_pr(
 ) -> None:
     """Process a specific PR."""
     try:
+        _validate_repo_format(repo)
         # Create improver
         improver = AutoImprovement(
             repo_path=repo,
@@ -114,6 +125,7 @@ def init(
 ) -> None:
     """Initialize a configuration file."""
     try:
+        _validate_repo_format(repo)
         # Use repo name as project name if not provided
         if not project_name:
             project_name = repo.split("/")[-1].title()
@@ -139,13 +151,13 @@ def init(
                 url=tracker_url,
             )
         elif issue_tracker == "jira":
-            from auto_improvement.issues_tracker_clients.trac_client import TracClient
+            from auto_improvement.issues_tracker_clients.jira_client import JiraClient
 
             if not tracker_url:
                 console.print("[red]Error: --tracker-url required for Jira[/red]")
                 raise typer.Exit(1) from None
             tracker_config = IssueTrackerConfig(
-                client=TracClient,
+                client=JiraClient,
                 url=tracker_url,
             )
         else:

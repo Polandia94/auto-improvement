@@ -267,27 +267,6 @@ Please provide the complete {self.agent_client.agent_name} content that will hel
                 "Please ensure Claude generated the learning context during the research session."
             )
 
-    def _extract_claude_md_from_response(self, response: str) -> str:
-        """Extract CLAUDE.md content from Claude's response."""
-        import re
-
-        # Try to find markdown code block
-        pattern = r"```markdown\n(.*?)```"
-        match = re.search(pattern, response, re.DOTALL)
-
-        if match:
-            return match.group(1).strip()
-
-        # Try to find content between # Project Context markers
-        pattern = r"(# Project Context.*)"
-        match = re.search(pattern, response, re.DOTALL)
-
-        if match:
-            return match.group(1).strip()
-
-        # If no structured content found, return the whole response
-        return response.strip()
-
     def _setup_repository(self) -> None:
         """Clone or update repository."""
         with Progress(
@@ -345,27 +324,34 @@ Please provide the complete {self.agent_client.agent_name} content that will hel
         for pr in prs:
             # Skip already analyzed PRs
             if pr.number in analyzed_prs:
-                print(f"Skipping PR #{pr.number}: already analyzed")
+                self.console.print(f"[dim]Skipping PR #{pr.number}: already analyzed[/dim]")
                 continue
 
             # Skip PRs that were previously found to have no linked issue
             if pr.number in skipped_prs:
-                print(f"Skipping PR #{pr.number}: previously found no linked issue")
+                self.console.print(
+                    f"[dim]Skipping PR #{pr.number}: previously found no linked issue[/dim]"
+                )
                 continue
 
-            print(f"Processing PR #{pr.number}: {pr.title}")
+            self.console.print(f"Processing PR #{pr.number}: {pr.title}")
             if pr.linked_issue:
                 enriched_prs.append(pr)
             else:
                 # Try to fetch from issue tracker
-                print("  No linked issue, trying to extract from PR description...")
+                self.console.print(
+                    "  [dim]No linked issue, trying to extract from PR description...[/dim]"
+                )
                 issue_info = self._extract_issue_id_from_pr(pr)
                 if issue_info:
                     pr.linked_issue = issue_info
                     enriched_prs.append(pr)
                 else:
                     # Save to skipped list so we don't check again
-                    print(f"  PR #{pr.number}: no linked issue found, adding to skip list")
+                    self.console.print(
+                        f"  [yellow]PR #{pr.number}: no linked issue found, "
+                        "adding to skip list[/yellow]"
+                    )
                     self._save_skipped_pr(pr.number, "no linked issue found")
         return enriched_prs
 

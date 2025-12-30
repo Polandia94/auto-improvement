@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import logging
 import os
-import shutil
 import subprocess
 from pathlib import Path
 from typing import TYPE_CHECKING, cast
@@ -125,53 +124,6 @@ class GitManager:
             reasoning=f"Developer solution from PR #{pr_info.number}",
         )
 
-    def apply_solution(self, solution: Solution) -> None:
-        """Apply a solution to the current checkout."""
-        if not self.repo:
-            raise ValueError("Repository not initialized. Call clone_or_update() first.")
-
-        for filename, content in solution.files.items():
-            file_path = self.local_path / filename
-
-            # Create parent directories if needed
-            file_path.parent.mkdir(parents=True, exist_ok=True)
-
-            # Write the file
-            file_path.write_text(content)
-
-    def get_changed_files(self) -> list[str]:
-        """Get list of files changed in working directory."""
-        if not self.repo:
-            raise ValueError("Repository not initialized. Call clone_or_update() first.")
-
-        # Get both staged and unstaged changes
-        changed_files: list[str] = []
-
-        # Unstaged changes
-        for item in self.repo.index.diff(None):
-            if item.a_path is not None:
-                changed_files.append(item.a_path)
-
-        # Untracked files
-        changed_files.extend(self.repo.untracked_files)
-
-        return changed_files
-
-    def create_branch(self, branch_name: str) -> None:
-        """Create a new branch for testing."""
-        if not self.repo:
-            raise ValueError("Repository not initialized. Call clone_or_update() first.")
-
-        # Create and checkout new branch
-        self.repo.git.checkout("-b", branch_name)
-
-    def reset_hard(self, commit: str = "HEAD") -> None:
-        """Reset repository to a specific commit."""
-        if not self.repo:
-            raise ValueError("Repository not initialized. Call clone_or_update() first.")
-
-        self.repo.git.reset("--hard", commit)
-
     def clean(self, exclude_patterns: list[str] | None = None) -> None:
         """
         Remove untracked files and directories, excluding specified patterns.
@@ -190,8 +142,3 @@ class GitManager:
                 args.extend(["--exclude", pattern])
 
         self.repo.git.clean(*args)
-
-    def cleanup(self) -> None:
-        """Clean up the local repository."""
-        if self.local_path.exists():
-            shutil.rmtree(self.local_path)

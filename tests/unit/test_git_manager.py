@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 
 from auto_improvement.git_manager import GitManager
-from auto_improvement.models import PRInfo, Solution
+from auto_improvement.models import PRInfo
 
 
 class TestGitManagerInit:
@@ -110,35 +110,6 @@ class TestGitManagerOperations:
         content = manager.get_file_content("nonexistent.txt")
         assert content is None
 
-    def test_apply_solution(self, temp_repo: tuple[GitManager, Path]) -> None:
-        """Test applying a solution to the repository."""
-        manager, repo_path = temp_repo
-
-        solution = Solution(
-            files={
-                "new_file.py": "print('Hello, World!')\n",
-                "subdir/nested.py": "# Nested file\n",
-            },
-            description="Test solution",
-        )
-
-        manager.apply_solution(solution)
-
-        # Check files were created
-        assert (repo_path / "new_file.py").exists()
-        assert (repo_path / "subdir" / "nested.py").exists()
-        assert (repo_path / "new_file.py").read_text() == "print('Hello, World!')\n"
-
-    def test_get_changed_files(self, temp_repo: tuple[GitManager, Path]) -> None:
-        """Test detecting changed files."""
-        manager, repo_path = temp_repo
-
-        # Create a new untracked file
-        (repo_path / "new_file.txt").write_text("New content")
-
-        changed = manager.get_changed_files()
-        assert "new_file.txt" in changed
-
     def test_clean_removes_untracked_files(self, temp_repo: tuple[GitManager, Path]) -> None:
         """Test that clean removes untracked files."""
         manager, repo_path = temp_repo
@@ -149,39 +120,6 @@ class TestGitManagerOperations:
         manager.clean()
 
         assert not (repo_path / "untracked.txt").exists()
-
-    def test_create_branch(self, temp_repo: tuple[GitManager, Path]) -> None:
-        """Test creating a new branch."""
-        manager, _ = temp_repo
-
-        manager.create_branch("test-branch")
-
-        # Verify branch was created and checked out
-        assert manager.repo is not None
-        assert manager.repo.active_branch.name == "test-branch"
-
-    def test_reset_hard(self, temp_repo: tuple[GitManager, Path]) -> None:
-        """Test hard reset."""
-        manager, repo_path = temp_repo
-
-        # Modify a file
-        (repo_path / "README.md").write_text("Modified content")
-
-        manager.reset_hard()
-
-        # Verify file was reset
-        assert (repo_path / "README.md").read_text() == "# Test Repository\n"
-
-    def test_cleanup_removes_directory(self, tmp_path: Path) -> None:
-        """Test that cleanup removes the repository directory."""
-        repo_path = tmp_path / "to-be-deleted"
-        repo_path.mkdir()
-        (repo_path / "file.txt").write_text("content")
-
-        manager = GitManager("test/repo", local_path=repo_path)
-        manager.cleanup()
-
-        assert not repo_path.exists()
 
 
 class TestGitManagerErrorHandling:
