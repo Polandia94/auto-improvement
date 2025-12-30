@@ -101,8 +101,9 @@ class AutoImprovement:
         # State
         self.current_run: ImprovementRun | None = None
 
-        # Tracking file for analyzed PRs (in learning dir, not repo)
+        # Tracking files for PRs (in learning dir, not repo)
         self.analyzed_prs_file = self.learning_dir / ".analyzed_prs.json"
+        self.skipped_prs_file = self.learning_dir / ".skipped_prs.json"
 
     def run_improvement_cycle(
         self,
@@ -180,7 +181,7 @@ class AutoImprovement:
             progress.update(task, description="🧠 Building research prompt...")
 
             # Build research prompt
-            research_prompt = self._build_research_prompt(repo_info, self.analyzer.agent_md_path)
+            research_prompt = self._build_research_prompt(repo_info)
 
             progress.update(task, description="🤖 Performing research with AI agent...")
             # Use CAgentlaude to analyze and create initial file
@@ -204,7 +205,7 @@ class AutoImprovement:
             self.console.print(f"[yellow]⚠[/yellow] Could not fetch repo info: {e}")
             return {}
 
-    def _build_research_prompt(self, repo_info: dict[str, Any], agent_md_path: Path) -> str:
+    def _build_research_prompt(self, repo_info: dict[str, Any]) -> str:
         """Build the research prompt."""
         repo_name = repo_info.get("name", self.repo_path)
         description = repo_info.get("description", "No description available")
@@ -236,7 +237,7 @@ Based on the above information, please:
    - Coding patterns and conventions
    - Testing approaches
 
-3. **Create a comprehensive {self.agent_client.agent_file} file on '{agent_md_path}' that includes:
+3. **Create a comprehensive {self.agent_client.agent_file} file in the current workspace directory that includes:
 ```
 
 Please provide the complete {self.agent_client.agent_name} content that will help me (an AI assistant) understand this project better for future PR implementations.
@@ -329,19 +330,27 @@ Please provide the complete {self.agent_client.agent_name} content that will hel
         return selected
 
     def search_prs(self, limit: int, analyzed_prs: set[int], offset: int = 0) -> list[PRInfo]:
-        fetch_limit = limit + len(analyzed_prs) + 10 + offset
+        # Load skipped PRs (no linked issue found previously)
+        skipped_prs = self._load_skipped_prs()
+
+        fetch_limit = limit + len(analyzed_prs) + len(skipped_prs) + 10 + offset
         prs = self.github_client.get_merged_prs(
             self.repo_path,
             self.config.pr_selection,
             limit=fetch_limit,
         )
 
-        # Enrich with issue information, skipping already analyzed PRs
+        # Enrich with issue information, skipping already processed PRs
         enriched_prs = []
         for pr in prs:
             # Skip already analyzed PRs
             if pr.number in analyzed_prs:
                 print(f"Skipping PR #{pr.number}: already analyzed")
+                continue
+
+            # Skip PRs that were previously found to have no linked issue
+            if pr.number in skipped_prs:
+                print(f"Skipping PR #{pr.number}: previously found no linked issue")
                 continue
 
             print(f"Processing PR #{pr.number}: {pr.title}")
@@ -350,11 +359,14 @@ Please provide the complete {self.agent_client.agent_name} content that will hel
             else:
                 # Try to fetch from issue tracker
                 print("  No linked issue, trying to extract from PR description...")
-                print(self.issue_tracker_client)
                 issue_info = self._extract_issue_id_from_pr(pr)
                 if issue_info:
                     pr.linked_issue = issue_info
                     enriched_prs.append(pr)
+                else:
+                    # Save to skipped list so we don't check again
+                    print(f"  PR #{pr.number}: no linked issue found, adding to skip list")
+                    self._save_skipped_pr(pr.number, "no linked issue found")
         return enriched_prs
 
     def _extract_issue_id_from_pr(self, pr: PRInfo) -> IssueInfo | None:
@@ -513,3 +525,37 @@ Please provide the complete {self.agent_client.agent_name} content that will hel
             "last_updated": datetime.now(UTC).isoformat(),
         }
         self.analyzed_prs_file.write_text(json.dumps(data, indent=2))
+
+    def _load_skipped_prs(self) -> set[int]:
+        """Load the set of PRs skipped for not matching criteria (no linked issue)."""
+        if not self.skipped_prs_file.exists():
+            return set()
+
+        try:
+            data = json.loads(self.skipped_prs_file.read_text())
+            return set(data.get("skipped_prs", []))
+        except (json.JSONDecodeError, KeyError):
+            return set()
+
+    def _save_skipped_pr(self, pr_number: int, reason: str = "no linked issue") -> None:
+        """Save a PR number to the skipped PRs tracking file."""
+        skipped = self._load_skipped_prs()
+        skipped.add(pr_number)
+
+        # Load existing reasons if any
+        reasons: dict[str, str] = {}
+        if self.skipped_prs_file.exists():
+            try:
+                existing_data = json.loads(self.skipped_prs_file.read_text())
+                reasons = existing_data.get("reasons", {})
+            except (json.JSONDecodeError, KeyError):
+                pass
+
+        reasons[str(pr_number)] = reason
+
+        output_data: dict[str, Any] = {
+            "skipped_prs": sorted(skipped),
+            "reasons": reasons,
+            "last_updated": datetime.now(UTC).isoformat(),
+        }
+        self.skipped_prs_file.write_text(json.dumps(output_data, indent=2))
