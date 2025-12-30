@@ -132,57 +132,56 @@ class TestTracClientWithVCR:
         assert issue.url  # Should have URL
 
 
+def _mock_subprocess_for_docker(
+    cmd: list[str], *_args: Any, **_kwargs: Any
+) -> subprocess.CompletedProcess[str]:
+    """Mock subprocess calls for Docker-based ClaudeClient."""
+    if not cmd:
+        raise ValueError("Empty command")
+
+    if cmd[0] == "docker":
+        if "images" in cmd:
+            # Docker image check - return as if image exists
+            return subprocess.CompletedProcess(args=cmd, returncode=0, stdout="abc123\n", stderr="")
+        elif "run" in cmd:
+            # Docker run - simulate successful execution
+            return subprocess.CompletedProcess(args=cmd, returncode=0, stdout="", stderr="")
+        elif "build" in cmd:
+            # Docker build
+            return subprocess.CompletedProcess(
+                args=cmd, returncode=0, stdout="Successfully built\n", stderr=""
+            )
+        return subprocess.CompletedProcess(args=cmd, returncode=0, stdout="", stderr="")
+
+    return subprocess.CompletedProcess(args=cmd, returncode=0, stdout="", stderr="")
+
+
 class TestClaudeClientMocked:
     """Test Claude client with mocked subprocess calls."""
 
     @pytest.fixture
     def claude_client(self, temp_repo_dir: Path) -> Generator[ClaudeClient, None, None]:
-        """Create Claude client with mocked version check."""
-        with patch("subprocess.run") as mock_run:
-            # Mock the version check
-            mock_run.return_value = subprocess.CompletedProcess(
-                args=["claude", "--version"],
-                returncode=0,
-                stdout="claude-code 1.0.0\n",
-                stderr="",
-            )
+        """Create Claude client with mocked Docker calls."""
+        with patch("subprocess.run", side_effect=_mock_subprocess_for_docker):
             config = AgentConfig(code_path="claude", model="claude-sonnet-4-20250514")
             client = ClaudeClient(config, working_dir=temp_repo_dir)
             yield client
 
     def test_verify_claude_code(self, temp_repo_dir: Path) -> None:
-        """Test Claude Code CLI verification."""
-
-        def mock_subprocess_side_effect(
-            cmd: list[str], *_args: Any, **_kwargs: Any
-        ) -> subprocess.CompletedProcess[str]:
-            """Mock subprocess calls for ClaudeClient initialization."""
-            if cmd[0] == "docker":
-                if "images" in cmd:
-                    # Docker image check - return as if image exists
-                    return subprocess.CompletedProcess(
-                        args=cmd, returncode=0, stdout="abc123\n", stderr=""
-                    )
-                return subprocess.CompletedProcess(args=cmd, returncode=0, stdout="", stderr="")
-            elif cmd[0] == "claude" and "--version" in cmd:
-                return subprocess.CompletedProcess(
-                    args=cmd, returncode=0, stdout="claude-code 1.0.0\n", stderr=""
-                )
-            return subprocess.CompletedProcess(args=cmd, returncode=0, stdout="", stderr="")
-
-        with patch("subprocess.run", side_effect=mock_subprocess_side_effect) as mock_run:
+        """Test ClaudeClient initialization with Docker."""
+        with patch("subprocess.run", side_effect=_mock_subprocess_for_docker) as mock_run:
             config = AgentConfig(code_path="claude")
             ClaudeClient(config, working_dir=temp_repo_dir)
 
-            # Verify subprocess was called (multiple times for docker + claude --version)
-            assert mock_run.call_count >= 2
-            # Verify claude --version was called
-            version_calls = [
+            # Verify subprocess was called for Docker image check
+            assert mock_run.call_count >= 1
+            # Verify docker images was called
+            docker_calls = [
                 call
                 for call in mock_run.call_args_list
-                if "claude" in str(call) and "--version" in str(call)
+                if "docker" in str(call) and "images" in str(call)
             ]
-            assert len(version_calls) == 1
+            assert len(docker_calls) >= 1
 
     def test_generate_solution(
         self,
@@ -191,17 +190,17 @@ class TestClaudeClientMocked:
         sample_issue_info: IssueInfo,
         temp_repo_dir: Path,
     ) -> None:
-        """Test solution generation with mocked Claude response."""
+        """Test solution generation with mocked Claude SDK."""
         # Create a test file that Claude would "modify"
         test_file = temp_repo_dir / "django" / "db" / "models"
         test_file.mkdir(parents=True)
         (test_file / "query.py").write_text("# Original content")
 
-        with patch("subprocess.run") as mock_run:
-            mock_run.return_value = subprocess.CompletedProcess(
-                args=["claude", "--print"],
+        with patch.object(claude_client, "_run_sdk_in_docker") as mock_sdk:
+            mock_sdk.return_value = subprocess.CompletedProcess(
+                args=["docker", "run"],
                 returncode=0,
-                stdout="I've implemented the solution by modifying query.py",
+                stdout="",
                 stderr="",
             )
 
@@ -212,7 +211,7 @@ class TestClaudeClientMocked:
                 solution = claude_client.generate_solution(
                     sample_pr_info,
                     sample_issue_info,
-                    {"context_file.py": "# Context"},
+                    None,
                 )
 
                 assert solution is not None
@@ -224,10 +223,10 @@ class TestClaudeClientMocked:
         sample_developer_solution: Solution,
         sample_claude_solution: Solution,
     ) -> None:
-        """Test solution comparison analysis with mocked response."""
-        with patch("subprocess.run") as mock_run:
-            mock_run.return_value = subprocess.CompletedProcess(
-                args=["claude"],
+        """Test solution comparison analysis with mocked SDK."""
+        with patch.object(claude_client, "_run_sdk_in_docker") as mock_sdk:
+            mock_sdk.return_value = subprocess.CompletedProcess(
+                args=["docker", "run"],
                 returncode=0,
                 stdout="",
                 stderr="",
@@ -240,7 +239,7 @@ class TestClaudeClientMocked:
             )
 
             # Just verify it was called (no exception raised)
-            assert mock_run.called
+            assert mock_sdk.called
 
 
 class TestFullIntegrationCycle:
@@ -256,60 +255,7 @@ class TestFullIntegrationCycle:
         """Mock all external calls for full integration test."""
         mocks: dict[str, MagicMock] = {}
 
-        # Track subprocess calls for different commands
-        def subprocess_side_effect(  # noqa: PLR0911
-            cmd: list[str], *args: Any, **kwargs: Any
-        ) -> subprocess.CompletedProcess[str]:
-            if not cmd:
-                raise ValueError("Empty command")
-
-            if cmd[0] == "claude":
-                if "--version" in cmd:
-                    return subprocess.CompletedProcess(
-                        args=cmd,
-                        returncode=0,
-                        stdout="claude-code 1.0.0\n",
-                        stderr="",
-                    )
-                elif "--print" in cmd:
-                    # Check for analysis or solution generation
-                    return subprocess.CompletedProcess(
-                        args=cmd,
-                        returncode=0,
-                        stdout="""<analysis>
-{
-    "overall_score": 0.85,
-    "strengths": ["Good implementation"],
-    "weaknesses": ["Could improve tests"],
-    "key_insights": ["Use Django conventions"]
-}
-</analysis>""",
-                        stderr="",
-                    )
-                else:
-                    # Interactive mode
-                    return subprocess.CompletedProcess(args=cmd, returncode=0, stdout="", stderr="")
-
-            elif cmd[0] == "git":
-                # Handle various git commands
-                if "clone" in cmd:
-                    return subprocess.CompletedProcess(
-                        args=cmd, returncode=0, stdout="Cloning...", stderr=""
-                    )
-                elif "checkout" in cmd:
-                    return subprocess.CompletedProcess(args=cmd, returncode=0, stdout="", stderr="")
-                elif "status" in cmd:
-                    return subprocess.CompletedProcess(
-                        args=cmd, returncode=0, stdout="nothing to commit", stderr=""
-                    )
-                elif "clean" in cmd or "reset" in cmd:
-                    return subprocess.CompletedProcess(args=cmd, returncode=0, stdout="", stderr="")
-                else:
-                    return subprocess.CompletedProcess(args=cmd, returncode=0, stdout="", stderr="")
-
-            return subprocess.CompletedProcess(args=cmd, returncode=0, stdout="", stderr="")
-
-        with patch("subprocess.run", side_effect=subprocess_side_effect) as mock_subprocess:
+        with patch("subprocess.run", side_effect=_mock_subprocess_for_docker) as mock_subprocess:
             mocks["subprocess"] = mock_subprocess
             yield mocks
 
@@ -424,103 +370,75 @@ class TestClaudeCodeMocking:
 
     def test_mock_successful_solution_generation(self, temp_repo_dir: Path) -> None:
         """Test mocking a successful solution generation."""
-        with patch("subprocess.run") as mock_run:
-            # Setup mock for version check
-            mock_run.return_value = subprocess.CompletedProcess(
-                args=["claude", "--version"],
-                returncode=0,
-                stdout="claude-code 1.0.0\n",
-                stderr="",
-            )
-
+        with patch("subprocess.run", side_effect=_mock_subprocess_for_docker):
             config = AgentConfig(code_path="claude")
             client = ClaudeClient(config, working_dir=temp_repo_dir)
-
-            # Now setup mock for solution generation
-            mock_run.return_value = subprocess.CompletedProcess(
-                args=["claude", "--print"],
-                returncode=0,
-                stdout="I've analyzed the issue and created a solution.",
-                stderr="",
-            )
 
             # Create test files
             (temp_repo_dir / "test.py").write_text("# Test file")
 
-            with patch.object(client, "_detect_changed_files", return_value=["test.py"]):
+            # Mock _run_sdk_in_docker for solution generation
+            with patch.object(client, "_run_sdk_in_docker") as mock_sdk:
+                mock_sdk.return_value = subprocess.CompletedProcess(
+                    args=["docker", "run"],
+                    returncode=0,
+                    stdout="",
+                    stderr="",
+                )
+
+                with patch.object(client, "_detect_changed_files", return_value=["test.py"]):
+                    pr_info = PRInfo(
+                        number=1,
+                        title="Test PR",
+                        description="Test description",
+                        author="test",
+                        merged_at=datetime.now(UTC),
+                        merge_commit_sha="abc123",
+                        base_commit_sha="base",
+                        head_commit_sha="head",
+                        files_changed=[],
+                        url="https://github.com/test/test/pull/1",
+                    )
+
+                    solution = client.generate_solution(pr_info, None, None)
+
+                    assert solution is not None
+                    assert "test.py" in solution.files
+
+    def test_mock_failed_solution_generation(self, temp_repo_dir: Path) -> None:
+        """Test handling of failed Claude SDK execution."""
+        with patch("subprocess.run", side_effect=_mock_subprocess_for_docker):
+            config = AgentConfig(code_path="claude")
+            client = ClaudeClient(config, working_dir=temp_repo_dir)
+
+            # Mock _run_sdk_in_docker to fail
+            with patch.object(client, "_run_sdk_in_docker") as mock_sdk:
+                mock_sdk.return_value = subprocess.CompletedProcess(
+                    args=["docker", "run"],
+                    returncode=1,
+                    stdout="",
+                    stderr="Error: SDK execution failed",
+                )
+
                 pr_info = PRInfo(
                     number=1,
                     title="Test PR",
-                    description="Test description",
+                    description="Test",
                     author="test",
                     merged_at=datetime.now(UTC),
-                    merge_commit_sha="abc123",
+                    merge_commit_sha="abc",
                     base_commit_sha="base",
                     head_commit_sha="head",
                     files_changed=[],
                     url="https://github.com/test/test/pull/1",
                 )
 
-                solution = client.generate_solution(pr_info, None, {})
-
-                assert solution is not None
-                assert "test.py" in solution.files
-
-    def test_mock_failed_solution_generation(self, temp_repo_dir: Path) -> None:
-        """Test handling of failed Claude Code execution."""
-        with patch("subprocess.run") as mock_run:
-            # Version check succeeds
-            mock_run.return_value = subprocess.CompletedProcess(
-                args=["claude", "--version"],
-                returncode=0,
-                stdout="claude-code 1.0.0\n",
-                stderr="",
-            )
-
-            config = AgentConfig(code_path="claude")
-            client = ClaudeClient(config, working_dir=temp_repo_dir)
-
-            # Solution generation fails
-            mock_run.return_value = subprocess.CompletedProcess(
-                args=["claude", "--print"],
-                returncode=1,
-                stdout="",
-                stderr="Error: API rate limit exceeded",
-            )
-
-            pr_info = PRInfo(
-                number=1,
-                title="Test PR",
-                description="Test",
-                author="test",
-                merged_at=datetime.now(UTC),
-                merge_commit_sha="abc",
-                base_commit_sha="base",
-                head_commit_sha="head",
-                files_changed=[],
-                url="https://github.com/test/test/pull/1",
-            )
-
-            with pytest.raises(RuntimeError, match="Claude Code failed"):
-                client.generate_solution(pr_info, None, {})
+                with pytest.raises(RuntimeError, match="Claude SDK failed"):
+                    client.generate_solution(pr_info, None, None)
 
     def test_mock_analysis_with_structured_response(self, temp_repo_dir: Path) -> None:
         """Test Claude analysis runs and edits files directly."""
-
-        def mock_subprocess_side_effect(
-            cmd: list[str], *_args: Any, **_kwargs: Any
-        ) -> subprocess.CompletedProcess[str]:
-            """Mock that simulates Claude running."""
-            if cmd[0] == "claude" and "--version" in cmd:
-                return subprocess.CompletedProcess(
-                    args=cmd, returncode=0, stdout="claude-code 1.0.0\n", stderr=""
-                )
-            # When running analysis, just return success (Claude edits files directly)
-            if cmd[0] == "claude":
-                return subprocess.CompletedProcess(args=cmd, returncode=0, stdout="", stderr="")
-            return subprocess.CompletedProcess(args=cmd, returncode=0, stdout="", stderr="")
-
-        with patch("subprocess.run", side_effect=mock_subprocess_side_effect):
+        with patch("subprocess.run", side_effect=_mock_subprocess_for_docker):
             config = AgentConfig(code_path="claude")
             client = ClaudeClient(config, working_dir=temp_repo_dir)
 
@@ -533,10 +451,20 @@ class TestClaudeCodeMocking:
                 description="Claude solution",
             )
 
-            # analyze_comparison now returns None and edits files directly
-            client.analyze_comparison(dev_solution, claude_solution)
+            # Mock _run_sdk_in_docker
+            with patch.object(client, "_run_sdk_in_docker") as mock_sdk:
+                mock_sdk.return_value = subprocess.CompletedProcess(
+                    args=["docker", "run"],
+                    returncode=0,
+                    stdout="",
+                    stderr="",
+                )
 
-            # No assertion needed - just verify no exception was raised
+                # analyze_comparison now returns None and edits files directly
+                client.analyze_comparison(dev_solution, claude_solution)
+
+                # Verify SDK was called
+                assert mock_sdk.called
 
 
 class TestEndToEndWithMocks:
@@ -565,37 +493,31 @@ class TestEndToEndWithMocks:
         pr = prs[0]
         assert pr.merged_at is not None
 
-        # Generate solution with mocked Claude
-        with patch("subprocess.run") as mock_run:
-            mock_run.return_value = subprocess.CompletedProcess(
-                args=["claude", "--version"],
-                returncode=0,
-                stdout="claude-code 1.0.0\n",
-                stderr="",
-            )
-
+        # Generate solution with mocked SDK
+        with patch("subprocess.run", side_effect=_mock_subprocess_for_docker):
             config = AgentConfig(code_path="claude")
             client = ClaudeClient(config, working_dir=temp_repo_dir)
-
-            mock_run.return_value = subprocess.CompletedProcess(
-                args=["claude", "--print"],
-                returncode=0,
-                stdout="Solution generated successfully",
-                stderr="",
-            )
 
             # Create expected files
             query_file = temp_repo_dir / "django" / "db" / "models" / "query.py"
             query_file.parent.mkdir(parents=True, exist_ok=True)
             query_file.write_text("# Modified query.py")
 
-            with patch.object(
-                client, "_detect_changed_files", return_value=["django/db/models/query.py"]
-            ):
-                solution = client.generate_solution(pr, pr.linked_issue, {"context": "value"})
+            with patch.object(client, "_run_sdk_in_docker") as mock_sdk:
+                mock_sdk.return_value = subprocess.CompletedProcess(
+                    args=["docker", "run"],
+                    returncode=0,
+                    stdout="",
+                    stderr="",
+                )
 
-                assert solution is not None
-                assert len(solution.files) > 0
+                with patch.object(
+                    client, "_detect_changed_files", return_value=["django/db/models/query.py"]
+                ):
+                    solution = client.generate_solution(pr, pr.linked_issue, None)
+
+                    assert solution is not None
+                    assert len(solution.files) > 0
 
     def test_complete_analysis_flow(
         self,
@@ -620,16 +542,8 @@ class TestEndToEndWithMocks:
         assert len(prs) > 0
         pr = prs[0]
 
-        # Step 2: Mock Claude for solution generation and analysis
-        with patch("subprocess.run") as mock_run:
-            # Version check
-            mock_run.return_value = subprocess.CompletedProcess(
-                args=["claude", "--version"],
-                returncode=0,
-                stdout="claude-code 1.0.0\n",
-                stderr="",
-            )
-
+        # Step 2: Mock Claude SDK for solution generation and analysis
+        with patch("subprocess.run", side_effect=_mock_subprocess_for_docker):
             config = AgentConfig(code_path="claude")
             client = ClaudeClient(config, working_dir=temp_repo_dir)
 
@@ -637,30 +551,23 @@ class TestEndToEndWithMocks:
             test_file = temp_repo_dir / "query.py"
             test_file.write_text("# Claude's solution")
 
-            # Solution generation
-            mock_run.return_value = subprocess.CompletedProcess(
-                args=["claude", "--print"],
-                returncode=0,
-                stdout="Generated solution for QuerySet optimization",
-                stderr="",
-            )
+            with patch.object(client, "_run_sdk_in_docker") as mock_sdk:
+                mock_sdk.return_value = subprocess.CompletedProcess(
+                    args=["docker", "run"],
+                    returncode=0,
+                    stdout="",
+                    stderr="",
+                )
 
-            with patch.object(client, "_detect_changed_files", return_value=["query.py"]):
-                claude_solution = client.generate_solution(pr, pr.linked_issue, {})
+                with patch.object(client, "_detect_changed_files", return_value=["query.py"]):
+                    claude_solution = client.generate_solution(pr, pr.linked_issue, None)
 
-            # Step 3: Analyze comparison (Claude edits files directly)
-            mock_run.return_value = subprocess.CompletedProcess(
-                args=["claude"],
-                returncode=0,
-                stdout="",
-                stderr="",
-            )
+                # Step 3: Analyze comparison (Claude edits files directly)
+                # analyze_comparison now returns None and edits files directly
+                client.analyze_comparison(
+                    sample_developer_solution,
+                    claude_solution,
+                )
 
-            # analyze_comparison now returns None and edits files directly
-            client.analyze_comparison(
-                sample_developer_solution,
-                claude_solution,
-            )
-
-            # Just verify Claude was called
-            assert mock_run.called
+                # Just verify SDK was called
+                assert mock_sdk.called

@@ -125,21 +125,6 @@ class AgentConfig(BaseModel):
 class PromptsConfig(BaseModel):
     """Custom prompts configuration."""
 
-    research: str = """Research the {project_name} project. Focus on:
-    - Architecture and design patterns
-    - Coding conventions
-    - Common patterns in recent PRs
-    - Testing practices
-    """
-
-    implementation: str = """Implement a solution for: {issue_description}
-
-    Context from repository:
-    {context}
-
-    Follow the project's conventions and patterns.
-    """
-
     # Optional: Override default unified analysis prompt
     analysis: str | None = None
 

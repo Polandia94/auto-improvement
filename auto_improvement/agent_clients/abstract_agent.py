@@ -48,7 +48,6 @@ class AbstractAgentClient(ABC):
             prompt_parts.append(f"# Task: {pr_info.title}\n")
             prompt_parts.append(f"{pr_info.description}\n")
 
-
         prompt_parts.append("\n## Task\n")
         prompt_parts.append(
             "Implement a solution to address the issue above. "
@@ -125,14 +124,6 @@ class AbstractAgentClient(ABC):
         return files
 
     @abstractmethod
-    def analyze_comparison(
-        self,
-        developer_solution: Solution,
-        agent_solution: Solution,
-        agent_md_content: str | None = None,
-    ) -> None: ...
-
-    @abstractmethod
     def run_analysis(self, prompt: str, workspace_dir: Path) -> None:
         """
         Run an analysis task with the given prompt in the specified workspace.
@@ -146,6 +137,24 @@ class AbstractAgentClient(ABC):
 
         Raises:
             RuntimeError: If the analysis fails or times out
+
+        """
+        ...
+
+    @abstractmethod
+    def run_research(self, prompt: str, workspace_dir: Path) -> None:
+        """
+        Run a research task with the given prompt in the specified workspace.
+
+        The agent should analyze the codebase and create initial context files
+        (like CLAUDE.md) in the workspace directory. This runs in Docker for isolation.
+
+        Args:
+            prompt: The research prompt to execute
+            workspace_dir: Directory to use as workspace (mounted in Docker)
+
+        Raises:
+            RuntimeError: If the research fails or times out
 
         """
         ...
