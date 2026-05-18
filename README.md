@@ -1,6 +1,7 @@
 # Auto-Improvement
 
 A meta-learning system that improves AI coding assistants by learning from real-world Pull Requests.
+After a preliminary investigation of the results, I believe this is not a useful approach, so the project is abandoned.
 
 ## How It Works
 
